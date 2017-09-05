@@ -10,7 +10,7 @@
     "cw-swcore-ceruleanplugins": {
         "source": {
             "type": "local",
-            "path": "/home/mzhukov/react-cordova/plugins/testapp/node_modules/cw-swcore-ceruleanplugins"
+            "path": "/home/mzhukov/GitHub/CeruleanPlugins/testapp/node_modules/cw-swcore-ceruleanplugins"
         },
         "is_top_level": true,
         "variables": {}
