@@ -43,6 +43,22 @@
                 <p class="event received">Device is Ready</p>
             </div>
         </div>
+        <div class="div1">
+         <input type=button id="blinkFlashButton" class="blinkButton" value="blinkFlash"><div id="blinkFlashLabel" class="blinkLabel"></div><br>
+         <hr>
+         <input type=button id="blinkWatchButton" class="blinkButton" value="blinkWatch"><div id="blinkWatchLabel" class="blinkLabel"></div><br>
+         <hr>
+         <select id='ssl' onChange="document.getElementById('ttx').value=document.getElementById('ssl').value;">
+          <option value='def' selected>Default</option>
+          <option value='1'>One</option>
+          <option value='2'>Two</option>
+          <option value='3'>Three</option>
+          <option value='5'>Four</option>
+         </select>
+         <input type=text id='ttx'><br>
+         <hr>
+         <div class="preview_screen" id="preview_screen"></div>
+        </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>

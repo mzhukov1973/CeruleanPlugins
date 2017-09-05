@@ -34,5 +34,5 @@ At the moment there are only two plugins in the suite:
 
 ## Requires
 - cordova-android >6.2.0
-- Java JDK 1.8 or greater
+- Java JDK 1.7 or greater
 - Android SDK [http://developer.android.com](http://developer.android.com)
