@@ -181,7 +181,7 @@ public class CeruleanPlugins extends CordovaPlugin {
      {
        private CameraManager   cameraManager;   private String currCamIdStr;                           private int       argLen;
        private CallbackContext callbackContext; private String successMsg = "End of the flash run..."; private JSONArray arg;
-       public BlinkFlash(CameraManager par_camera, int par_currCamIdStr, JSONArray par_args, CallbackContext par_callbackContext) throws Exception
+       public BlinkFlash(CameraManager par_camera, String par_currCamIdStr, JSONArray par_args, CallbackContext par_callbackContext) throws Exception
        {
         this.cameraManager=par_camera; this.currCamIdStr=par_currCamIdStr; this.callbackContext=par_callbackContext;
         try{this.arg=new JSONArray(par_args.getString(0));} catch(JSONException e) {throw new Exception("BlinkFlash instantiation failed",e);}
@@ -230,8 +230,8 @@ public class CeruleanPlugins extends CordovaPlugin {
       cameraDevice.createCaptureSession(Arrays.asList(surface),
                                         new CameraCaptureSession.StateCallback() 
                                             {
-                                             @Override public void onConfigured(CameraCaptureSession ccs) {if (cameraDevice == null || !textureView.isAvailable() || previewSize == null) {return;} cameraCaptureSession = ccs; Toast.makeText(getApplicationContext(), "onConfigured()", Toast.LENGTH_SHORT).show(); updatePreview();}
-                                             @Override public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {Toast.makeText(getApplicationContext(), "Configuration change", Toast.LENGTH_SHORT).show();}
+                                             @Override public void onConfigured(CameraCaptureSession ccs) {if (cameraDevice == null || !textureView.isAvailable() || previewSize == null) {return;} cameraCaptureSession = ccs; Toast.makeText(webView.getContext(), "onConfigured()", Toast.LENGTH_SHORT).show(); updatePreview();}
+                                             @Override public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {Toast.makeText(webView.getContext(), "Configuration change", Toast.LENGTH_SHORT).show();}
                                             },
                                         null);
      } catch (CameraAccessException e) {throw new RuntimeException(e);}
