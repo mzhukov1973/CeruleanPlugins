@@ -57,6 +57,20 @@ body {
     padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
     margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
                                    /* offset horizontal: half of text area width */
+    animation:spin 5s linear 0s infinite alternate;
+    outline:1px dotted black;
+}
+@keyframes spin
+{
+ 0%    {transform:translate( -100px,    0px) rotate(   60deg)}
+ 12.5% {transform:translate(-87.5px, 62.5px) rotate( 22.5deg)}
+ 25%   {transform:translate(  -75px,   75px) rotate(   15deg)}
+ 37.5% {transform:translate(-62.5px, 87.5px) rotate(  7.5deg)}
+ 50%   {transform:translate(    0px,  100px) rotate(    0deg)}
+ 62.5% {transform:translate( 62.5px, 87.5px) rotate( -7.5deg)}
+ 75%   {transform:translate(   75px,   75px) rotate(  -15deg)}
+ 87.5% {transform:translate( 87.5px, 62.5px) rotate(-22.5deg)}
+ 100%  {transform:translate(  100px,    0px) rotate(  -60deg)}
 }
 
 /* Landscape layout (with min-width) */
@@ -112,4 +126,45 @@ h1 {
 .blink {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
+}
+
+.div1 {
+ font-size:0.7rem;
+ text-transform:none;
+ border:1px solid black;
+ border-radius:5px;
+ margin:10px;
+ padding:5px;
+ position:absolute;
+ left:10%;
+ width:80%
+ top:2%;
+ display:inline-block;
+}
+
+.blinkButton {
+ font-size:1em;
+ margin:0px;
+}
+.blinkLabel {
+ font-size:1em;
+ margin:0px;
+ margin-left:calc(1*1em);
+ border:1px solid rgba(120,120,120,1);
+ padding:1px;
+ text-align:left;
+ color:black;
+ background-color:rgba(220,220,220,1);
+}
+.strng {
+ font-weight:700;
+}
+.preview_screen
+{
+ background-color:rgba(160,160,160,1);
+ width:320px;
+ height:200px;
+ margin:2px;
+ padding:1px;
+ border:1px solid black;
 }
