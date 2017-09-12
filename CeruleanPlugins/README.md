@@ -25,9 +25,9 @@ it is rewarded with a separate repository for further developement.
 
 At the moment there are only two plugins in the suite:
 * blinkFlash, standing at version 0.1.0, and
-* blinkWatch, currently at 0.0.2.
+* blinkWatch, currently at 0.0.2
 
-[Cerulean Plugins](https://github.com/mzhukov1973/CeruleanPlugins) is a project authored by Maxim Zhuko.
+[Cerulean Plugins](https://github.com/mzhukov1973/CeruleanPlugins) is a project authored by Maxim Zhukov.
 
 :warning: Report issues on the [Cerulean Plugins issue tracker](https://github.com/mzhukov1973/CeruleanPlugins/issues)
 
