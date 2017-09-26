@@ -22,7 +22,7 @@
 
 
  <name>CeruleanPlugins</name>
- <description>Many-in-one plugin testing ground. To be spearated into individual plugins as they each mature past 0.1.0. Currently is at general version of 0.1.2, containing 2 plugins: flashBlink (at ver. 0.1.0) and flashWatch (at ver. 0.0.2).</description>
+ <description>Many-in-one plugin testing ground. To be spearated into individual plugins as they each mature past 0.1.0. Currently is at general version of 0.1.2, containing 2 plugins:  (at ver. 0.1.0) and watchFlash (at ver. 0.0.2).</description>
  <author>Maxim Zhukov</author>
  <keywords>TestingGround,blinkFlash,blinkWatch,CeruleanWhisper,Cordova,Android</keywords>
  <license>Apache-2.0</license>
