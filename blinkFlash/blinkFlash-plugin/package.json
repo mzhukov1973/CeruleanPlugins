@@ -1,0 +1,34 @@
+{
+ "name": "cw-swcore-ceruleanplugins-blinkflash",
+ "displayName": "BlinkFlash",
+ "version": "0.1.1",
+ "description": "blinkFlash plugin from Cerulean Plugins suite (ver. 0.1.1). Flashes camera's flashlight using different patterns, supports really fast flash-noflash durations.",
+ "author": "Maxim Zhukov <mzhukov31415dev@gmail.com> (https://github.com/mzhukov1973/CeruleanPlugins)",
+ "license": "Apache-2.0",
+  "contributors": {},
+  "engines": {
+    "cordovaDependencies": {
+      "0.0.1": { "cordova-android": ">6.1.0" },
+      "0.1.0": { "cordova-android": ">6.2.0" }
+    }
+  },
+  "bugs": {
+    "url":   "https://github.com/mzhukov1973/CeruleanPlugins/issues",
+    "email": "mzhukov31415dev@gmail.com"
+  },
+  "homepage": "https://github.com/mzhukov1973/CeruleanPlugins/blinkFlash#readme",
+  "cordova": {
+    "id": "cw-swcore-ceruleanplugins-blinklflash",
+    "platforms": ["android"]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "blinkFlash",
+    "CeruleanWhisper",
+    "CeruleamPlugins",
+    "plugins"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
