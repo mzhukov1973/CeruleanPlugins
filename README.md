@@ -23,7 +23,7 @@ Architecturally it's one large plugin, exporting many methods. Once a sub-plugin
 it is rewarded with a separate repository for further developement.
 
 At the moment there are only two plugins in the suite:
-* blinkFlash, standing at version 0.1.0, and
+* blinkFlash, standing at version 0.1.1, and
 * blinkWatch, currently at 0.0.2
 
 [Cerulean Plugins](https://github.com/mzhukov1973/CeruleanPlugins) is a project authored by Maxim Zhukov.
@@ -37,9 +37,9 @@ At the moment there are only two plugins in the suite:
 - Android SDK [http://developer.android.com](http://developer.android.com)
 
 ## ToDo:
-- [ ] Create a Cordova Android dedicated testing app for the blinkFlash plugin.
-- [ ] Move blinkFlash code to a separate Cordova project.
+- [x] ~~Create a Cordova Android dedicated testing app for the blinkFlash plugin.~~
+- [x] ~~Move blinkFlash code to a separate Cordova project.~~
 - [ ] Remove blinkFlash code from Cerulean Plugins base.
-- [ ] Move blinkFlash plugin and it corresponding testing app to a separate folder.
+- [x] ~~Move blinkFlash plugin and it corresponding testing app to a separate folder.~~
 - [ ] Clean out camera-related code from Cerulean Plugins base code.
 - [ ] Re-implement blinkWatch plugin using existing QR-scanning plugin as a base instead.
