@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-
 # Cerulean Plugins
 
 **Cerulean Plugins** is a plugins suite for Apache Cordova (at the moment it's Android only), developed to be used in **CeruleanWhisper** protected comms software.
