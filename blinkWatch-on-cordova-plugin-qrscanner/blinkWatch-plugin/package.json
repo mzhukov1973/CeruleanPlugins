@@ -1,0 +1,39 @@
+{
+ "name": "cw-swcore-ceruleanplugins-blinkwatch",
+ "displayName": "BlinkWatch",
+ "version": "0.0.1",
+ "description": "blinkWatch plugin from Cerulean Plugins suite (ver. 0.1.1). Watches camera's watchlight using different patterns, supports really fast flash-noflash durations.",
+ "author": "Maxim Zhukov <mzhukov31415dev@gmail.com> (https://github.com/mzhukov1973/CeruleanPlugins)",
+ "license": "Apache-2.0",
+  "contributors": {},
+  "bugs": {
+    "url":   "https://github.com/mzhukov1973/CeruleanPlugins/issues",
+    "email": "mzhukov31415dev@gmail.com"
+  },
+  "homepage": "https://github.com/mzhukov1973/CeruleanPlugins/blinkWatch#readme",
+  "cordova": {
+    "id": "cw-swcore-ceruleanplugins-blinklwatch",
+    "platforms": ["android"]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "blinkWatch",
+    "CeruleanWhisper",
+    "CeruleamPlugins",
+    "plugins"
+  ],
+  "dependencies": {
+    "once": "^1.4.0",
+    "qrcode-reader": "^0.2.2",
+    "webrtc-adapter": "^3.1.4"
+  },
+  "devDependencies": {
+    "express": "^4.14.0",
+    "jshint": "^2.9.2",
+    "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
+    "raw-loader": "^0.5.1",
+    "validate-commit-msg": "^2.6.1"
+  }
+}

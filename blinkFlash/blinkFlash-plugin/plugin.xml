@@ -19,14 +19,15 @@
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
- <name>CeruleanPlugins-blinkFlash</name>
+ <name>blinkFlash</name>
+
  <description>blinkFlash plugin from Cerulean Plugins suite (ver. 0.1.1). Flashes camera's flashlight using different patterns, supports really fast flash-noflash durations.</description>
  <author>Maxim Zhukov</author>
  <keywords>blinkFlash,CeruleanWhisper,CeruleanPlugins,Cordova,Android</keywords>
  <license>Apache-2.0</license>
 
  <js-module src="www/BlinkFlash.js" name="blinkFlash">
-  <clobbers target="cordova.plugins.CeruleanPlugins" />
+  <clobbers target="cordova.plugins.CeruleanPlugins.blinkFlash" />
  </js-module>
 
 
@@ -34,7 +35,7 @@
 
   <config-file target="res/xml/config.xml"  parent="/*">
    <feature name="blinkFlash">
-     <param name="android-package" value="cw.swcore.ceruleanplugins.BlinkFlash" />
+     <param name="android-package" value="cw.swcore.ceruleanplugins.blinkFlash" />
    </feature>
   </config-file>
 
@@ -42,7 +43,7 @@
    <uses-permission android:name="android.permission.CAMERA" />
   </config-file>
 
-  <source-file src="src/android/BlinkFlash.java" target-dir="src/cw/swcore/ceruleanplugins" />
+  <source-file src="src/android/BlinkFlash.java" target-dir="src/cw/swcore/ceruleanplugins/blinkflash" />
 
   <source-file src="build-extras.gradle" target-dir="." />
 
