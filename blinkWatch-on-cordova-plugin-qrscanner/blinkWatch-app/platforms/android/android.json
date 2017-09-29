@@ -1,0 +1,69 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "res/xml/config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"BlinkWatch\"><param name=\"android-package\" value=\"cw.swcore.ceruleanplugins.BlinkWatch\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "AndroidManifest.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.CAMERA\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-feature android:name=\"android.hardware.camera.front\" android:required=\"false\" />",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "cw.swcore.ceruleanplugins_blinkwatchapp"
+        },
+        "cw-swcore-ceruleanplugins-blinkwatch": {
+            "PACKAGE_NAME": "cw.swcore.ceruleanplugins_blinkwatchapp"
+        }
+    },
+    "dependent_plugins": {},
+    "modules": [
+        {
+            "id": "cw-swcore-ceruleanplugins-blinkwatch.BlinkWatch",
+            "file": "plugins/cw-swcore-ceruleanplugins-blinkwatch/www/BlinkWatch.js",
+            "pluginId": "cw-swcore-ceruleanplugins-blinkwatch",
+            "clobbers": [
+                "cordova.plugins.CeruleanPlugins.BlinkWatch"
+            ]
+        }
+    ],
+    "plugin_metadata": {
+        "cordova-plugin-whitelist": "1.3.2",
+        "cordova-plugin-compat": "1.2.0",
+        "cw-swcore-ceruleanplugins-blinkwatch": "0.0.1"
+    }
+}
