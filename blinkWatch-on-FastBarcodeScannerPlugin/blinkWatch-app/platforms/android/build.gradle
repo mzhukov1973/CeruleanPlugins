@@ -250,6 +250,10 @@ dependencies {
     // SUB-PROJECT DEPENDENCIES START
     debugCompile(project(path: "CordovaLib", configuration: "debug"))
     releaseCompile(project(path: "CordovaLib", configuration: "release"))
+    compile "com.google.zxing:core:3.2.1"
+    compile "dk.schaumburgit.fast-barcode-scanner:still-sequence-camera:1.0.7"
+    compile "dk.schaumburgit.fast-barcode-scanner:tracking-barcode-scanner:1.0.7"
+    compile "dk.schaumburgit.fast-barcode-scanner:fast-barcode-scanner:1.0.7"
     // SUB-PROJECT DEPENDENCIES END
 }
 
