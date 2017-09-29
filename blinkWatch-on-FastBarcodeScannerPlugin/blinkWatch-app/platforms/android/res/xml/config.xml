@@ -4,6 +4,9 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="BlinkWatch">
+        <param name="android-package" value="cw.swcore.ceruleanplugins.BlinkWatch" />
+    </feature>
     <name>blinkWatchApp</name>
     <description>
      A tester app for blinkWatch plugin from Cerulean Plugins suite.
@@ -21,4 +24,5 @@
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
+    <preference name="android-minSdkVersion" value="21" />
 </widget>

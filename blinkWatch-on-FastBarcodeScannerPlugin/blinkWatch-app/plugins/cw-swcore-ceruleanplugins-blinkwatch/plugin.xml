@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+   Copyright 2017 Maxim Zhukov
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<plugin id="cw-swcore-ceruleanplugins-blinkwatch"
+        version="0.0.1"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+ <name>BlinkWatch</name>
+
+ <description>blinkWatch plugin from Cerulean Plugins suite (ver. 0.1.1). Watches camera's flashlight using different patterns, supports really fast flash-noflash durations.</description>
+ <author>Maxim Zhukov</author>
+ <keywords>blinkWatch,CeruleanWhisper,CeruleanPlugins,Cordova,Android</keywords>
+ <license>Apache-2.0</license>
+
+ <js-module src="www/BlinkWatch.js" name="BlinkWatch">
+  <clobbers target="cordova.plugins.CeruleanPlugins.BlinkWatch" />
+ </js-module>
+
+
+ <platform name="android">
+
+  <config-file target="res/xml/config.xml"  parent="/*">
+   <feature name="BlinkWatch">
+     <param name="android-package" value="cw.swcore.ceruleanplugins.BlinkWatch" />
+   </feature>
+   <preference name="android-minSdkVersion" value="21" />
+  </config-file>
+
+  <config-file target="AndroidManifest.xml" parent="/*">
+   <uses-permission android:name="android.permission.CAMERA"/>
+   <uses-permission android:name="android.permission.BLUETOOTH"/>
+   <uses-permission android:name="android.permission.VIBRATE"/>
+   <uses-feature android:name="android.hardware.camera" android:required="true" />
+   <uses-feature android:name="android.hardware.camera.front" android:required="true" />
+  </config-file>
+
+  <source-file src="src/android/BlinkWatch.java" target-dir="src/cw/swcore/ceruleanplugins" />
+  <framework src="com.google.zxing:core:3.2.1"/>
+  <framework src="dk.schaumburgit.fast-barcode-scanner:still-sequence-camera:1.0.7"/>
+  <framework src="dk.schaumburgit.fast-barcode-scanner:tracking-barcode-scanner:1.0.7"/>
+  <framework src="dk.schaumburgit.fast-barcode-scanner:fast-barcode-scanner:1.0.7"/>
+
+ </platform>
+
+</plugin>
