@@ -1,0 +1,22 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cw-swcore-ceruleanplugins-blinkwatch": {
+            "PACKAGE_NAME": "cw.swcore.ceruleanplugins_blinkwatchapp"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "cw.swcore.ceruleanplugins_blinkwatchapp"
+        }
+    }
+}
