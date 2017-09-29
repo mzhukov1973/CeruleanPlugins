@@ -25,4 +25,6 @@
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
     <preference name="android-minSdkVersion" value="21" />
+    <preference name="android-targetSdkVersion" value="26" />
+    <preference name="android-maxSdkVersion" value="26" />
 </widget>

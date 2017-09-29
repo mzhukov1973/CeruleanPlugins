@@ -38,6 +38,8 @@
      <param name="android-package" value="cw.swcore.ceruleanplugins.BlinkWatch" />
    </feature>
    <preference name="android-minSdkVersion" value="21" />
+   <preference name="android-targetSdkVersion" value="26" />
+   <preference name="android-maxSdkVersion" value="26" />
   </config-file>
 
   <config-file target="AndroidManifest.xml" parent="/*">
