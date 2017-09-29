@@ -19,6 +19,14 @@
                         {
                             "xml": "<preference name=\"android-minSdkVersion\" value=\"21\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"android-targetSdkVersion\" value=\"26\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"android-maxSdkVersion\" value=\"26\" />",
+                            "count": 1
                         }
                     ]
                 }
