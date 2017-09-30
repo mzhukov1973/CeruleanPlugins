@@ -20,4 +20,3 @@ exports.startVideo         = function(success, error) {exec(success, error, "Cam
 exports.stopVideo          = function(success, error) {exec(success, error, "Cam2Plug",  "stopVideo");};
 exports.isFullyInitialised = function(success, error) {exec(success, error, "Cam2Plug",  "isFullyInitialised");}; /*To poll for result*/
 exports.isFullyInitialized = isFullyInitialised; /*There are all sorts of people*/                                /*To poll for result*/
-
