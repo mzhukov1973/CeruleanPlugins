@@ -22,8 +22,9 @@ apply plugin: 'com.android.application'
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 
     // Switch the Android Gradle plugin version requirement depending on the
@@ -31,7 +32,7 @@ buildscript {
     // http://tools.android.com/tech-docs/new-build-system/version-compatibility
     // and https://issues.apache.org/jira/browse/CB-8143
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:2.2.3'
     }
 }
 
@@ -39,8 +40,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -88,6 +90,9 @@ ext {
     // Plugin gradle extensions can append to this to have code run at the end.
     cdvPluginPostBuildExtras = []
 }
+
+// PLUGIN GRADLE EXTENSIONS START
+// PLUGIN GRADLE EXTENSIONS END
 
 def hasBuildExtras = file('build-extras.gradle').exists()
 if (hasBuildExtras) {
@@ -149,14 +154,6 @@ task cdvPrintProps << {
 }
 
 android {
-    signingConfigs {
-        signingConfig {
-            keyAlias 'keyTwoDebug'
-            keyPassword '330117330119'
-            storeFile file('/home/mzhukov/.myKeyStores/keyStore02.jks')
-            storePassword '3m3a0x1i1m73m3a0x1i1m9'
-        }
-    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -169,30 +166,33 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
     defaultConfig {
+        versionCode cdvVersionCode ?: new BigInteger("" + privateHelpers.extractIntFromManifest("versionCode"))
         applicationId privateHelpers.extractStringFromManifest("package")
+
         if (cdvMinSdkVersion != null) {
             minSdkVersion cdvMinSdkVersion
         }
-        minSdkVersion 22
-        targetSdkVersion 26
-        signingConfig signingConfigs.signingConfig
     }
+
     lintOptions {
-        abortOnError false;
+      abortOnError false;
     }
+
     compileSdkVersion cdvCompileSdkVersion
-    buildToolsVersion '26.0.2'
+    buildToolsVersion cdvBuildToolsVersion
+
     if (Boolean.valueOf(cdvBuildMultipleApks)) {
         productFlavors {
             armv7 {
-                versionCode defaultConfig.versionCode * 10 + 2
+                versionCode defaultConfig.versionCode*10 + 2
                 ndk {
                     abiFilters "armeabi-v7a", ""
                 }
             }
             x86 {
-                versionCode defaultConfig.versionCode * 10 + 4
+                versionCode defaultConfig.versionCode*10 + 4
                 ndk {
                     abiFilters "x86", ""
                 }
@@ -220,17 +220,18 @@ android {
       }
     }
     */
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
+
     if (cdvReleaseSigningPropertiesFile) {
         signingConfigs {
             release {
                 // These must be set or Gradle will complain (even if they are overridden).
                 keyAlias = ""
-                keyPassword = "__unset"
-                // And these must be set to non-empty in order to have the signing step added to the task graph.
+                keyPassword = "__unset" // And these must be set to non-empty in order to have the signing step added to the task graph.
                 storeFile = null
                 storePassword = "__unset"
             }
@@ -245,20 +246,10 @@ android {
     if (cdvDebugSigningPropertiesFile) {
         addSigningProps(cdvDebugSigningPropertiesFile, signingConfigs.debug)
     }
-    productFlavors {
-    }
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.signingConfig
-        }
-        release {
-            signingConfig signingConfigs.signingConfig
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
+    compile fileTree(dir: 'libs', include: '*.jar')
     // SUB-PROJECT DEPENDENCIES START
     debugCompile(project(path: "CordovaLib", configuration: "debug"))
     releaseCompile(project(path: "CordovaLib", configuration: "release"))
