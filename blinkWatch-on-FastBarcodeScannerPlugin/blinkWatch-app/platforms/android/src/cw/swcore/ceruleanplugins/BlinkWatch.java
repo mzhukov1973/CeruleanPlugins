@@ -20,19 +20,28 @@
 */
 package cw.swcore.ceruleanplugins;
 
+import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterfaceImpl;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebViewImpl;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.LOG;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.provider.Settings;
+import android.view.TextureView;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Toast;
 import android.view.WindowManager;
 
@@ -47,11 +56,20 @@ import dk.schaumburgit.stillsequencecamera.camera2.StillSequenceCamera2;
 
 public class BlinkWatch extends CordovaPlugin implements FastBarcodeScanner.BarcodeDetectedListener, FastBarcodeScanner.MultipleBarcodesDetectedListener
 {
- public static final String TAG = "Cerulean Whisper blinkWatch plugin";
+ public static final String TAG = "CW.blinkWatch";
 
  private static final String ACTION_SHOW_TOAST = "showToast";
  private static final String ACTION_START_SCANNING = "startScanning";
  private static final String ACTION_STOP_SCANNING = "stopScanning";
+
+ private TextureView myTextureView;
+ private Context myContext;
+ private ViewParent parentView;
+ private Activity myActivity;
+ private CordovaActivity myCordovaActivity;
+ private CordovaInterfaceImpl myCordova;
+ private CordovaWebViewImpl myCordovaWebView;
+ private SurfaceTexture mySurfaceTexture;
 
  public BlinkWatch() {
  }
@@ -87,6 +105,12 @@ public class BlinkWatch extends CordovaPlugin implements FastBarcodeScanner.Barc
   else if (ACTION_START_SCANNING.equals(action)) {
    int resolution = 1024*768;
    if (arg_object != null) {resolution = arg_object.optInt("resolution", 1024*768);}
+   this.myActivity=cordova.getActivity();
+   this.myContext = webView.getContext();
+   this.myTextureView = new TextureView(myContext);
+   this.myTextureView.setContentDescription("A supposedly future View to yield Surface for the Preview camera stream...");
+   this.myActivity.setContentView(this.myTextureView);
+   this.myTextureView.getSurfaceTextureListener().onSurfaceTextureAvailable(this.mySurfaceTexture,0,0);
    startScanning(resolution, callbackContext);
    return true;
   }
