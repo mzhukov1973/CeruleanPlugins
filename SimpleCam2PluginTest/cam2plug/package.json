@@ -1,20 +1,32 @@
 {
-  "name": "cam2plug",
+  "name": "Cam2Plug",
   "version": "0.0.1",
   "description": "A simple, straight-up, neat camera2 Cordova-Android plugin, written mainly out of frustration and/or for testing.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mzhukov1973/CeruleanPlugins"
+  },
+  "bugs": {
+    "url": "https://github.com/mzhukov1973/CeruleanPlugins/issues",
+    "email": "mzhukov31415dev@gmail.com"
+  },
+  "homepage":"https://github.com/mzhukov1973/CeruleanPlugins",
   "cordova": {
     "id": "cw.plugins.cam2plug",
-    "platforms": [
-      "android"
-    ]
+    "platforms": ["android"]
   },
-  "keywords": [
-    "ecosystem:cordova",
-    "cordova-android",
-    "camera2",
-    "plugin",
-    "android"
-  ],
+  "engines": {
+    "cordovaDependencies": {
+      "0.0.0": {
+            "cordova-android": ">=6.2.2",
+            "cordova": ">=7.0.0"
+      }
+    }
+  },
+  "dependencies":{
+    "cordova-android": "^6.2.2"
+  },
+  "keywords": ["ecosystem:cordova","cordova-android","camera2","plugin","android"],
   "author": "Maxim Zhukov <mzhukov31415dev@gmail.com> (https://github.com/mzhukov1973)",
   "license": "Apache-2.0"
 }

@@ -1,8 +1,8 @@
 {
     "name": "cam2app",
-    "displayName": "SimpleCam2CordovaApp",
+    "displayName": "Simple Camera2 Cordova Plugin Testing App",
     "version": "0.0.1",
-    "description": "A simple app to test a simple camera2 cordova plugin (cam2plug).",
+    "description": "A simple app to test a simple camera2 cordova plugin (Cam2Plug).",
     "keywords": [
         "ecosystem:cordova",
         "cordova-android",
@@ -19,15 +19,12 @@
     "author": "Maxim Zhukov <mzhukov31415dev@gmail.com> (https://github.com/mzhukov1973)",
     "license": "Apache-2.0",
     "dependencies": {
-        "cam2plug": "file:../cam2plug",
         "cordova-android": "^6.3.0",
-        "cordova-plugin-whitelist": "^1.3.2",
-        "cw.plugins.cam2plug": "../cam2plug"
+        "cordova-plugin-whitelist": "^1.3.2"
     },
     "cordova": {
         "plugins": {
-            "cordova-plugin-whitelist": {},
-            "cw.plugins.cam2plug": {}
+            "cordova-plugin-whitelist": {}
         }
     }
 }

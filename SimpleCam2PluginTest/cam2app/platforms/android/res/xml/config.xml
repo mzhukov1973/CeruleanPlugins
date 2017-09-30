@@ -4,11 +4,8 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <feature name="cam2plug">
-        <param name="android-package" value="cw.plugins.cam2plug" />
-    </feature>
-    <name>cam2app</name>
-    <description>A simple app to test a simple camera2 cordova plugin (cam2plug).</description>
+    <name>Cam2App</name>
+    <description>A simple app to test a simple camera2 cordova plugin (Cam2Plug).</description>
     <author email="mzhukov31415dev@gmail.com" href="https://github.com/mzhukov1973">Maxim Zhukov</author>
     <license>Apache-2.0</license>
     <content src="index.html" />
@@ -21,5 +18,4 @@
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
-    <preference name="android-minSdkVersion" value="21" />
 </widget>
