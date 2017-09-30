@@ -6,13 +6,5 @@
         },
         "is_top_level": true,
         "variables": {}
-    },
-    "cw.plugins.cam2plug": {
-        "source": {
-            "type": "local",
-            "path": "/home/mzhukov/GitHub/CeruleanPlugins/SimpleCam2PluginTest/cam2app/node_modules/cam2plug"
-        },
-        "is_top_level": true,
-        "variables": {}
     }
 }

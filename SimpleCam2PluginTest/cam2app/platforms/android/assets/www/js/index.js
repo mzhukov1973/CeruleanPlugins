@@ -23,11 +23,13 @@ var app = {
      var body = document.body; if (body.style) {body.style.backgroundColor = 'rgba(0,0,0,0.01)'; body.style.backgroundImage = ''; setTimeout(function() { body.style.backgroundColor = 'transparent'; }, 1); if (body.parentNode && body.parentNode.style) { body.parentNode.style.backgroundColor = 'transparent'; body.parentNode.style.backgroundImage = ''; }}
     },
 
+
+
     successCallback: function(success_txt) {
      var strTxt = 'cordova.plugins.Cam2Plug: SUCCESS! (message:\''+JSON.stringify(success_txt)+'\')';
      console.log(strTxt);
      document.getElementById('videoLabel').style.color = '#009900';
-     document.getElementById('videoLabel').innerHTML = StrTxt;
+     document.getElementById('videoLabel').innerHTML = strTxt;
      document.getElementById('deviceready').querySelector('.received').style.color = '#009900';
      document.getElementById('deviceready').querySelector('.received').innerHTML = 'Done!';
     },
@@ -36,12 +38,12 @@ var app = {
      var strTxt = 'cordova.plugins.Cam2Plug: ERROR! (message:\''+JSON.stringify(error_txt)+'\')';
      console.log(strTxt);
      document.getElementById('videoLabel').style.color = '#AA0000';
-     document.getElementById('videoLabel').innerHTML = StrTxt;
+     document.getElementById('videoLabel').innerHTML = strTxt;
      document.getElementById('deviceready').querySelector('.received').style.color = '#FF0000';
      document.getElementById('deviceready').querySelector('.received').innerHTML = 'Error!';
     },
 
-    errorCallback:   function(error_txt)   {console.log('cordova.plugins.Cam2Plug: ERROR! (message:\''+JSON.stringify(error_txt)+'\')');},
+
 
     onStartVideoClick: function() {
         document.getElementById('videoLabel').style.color = '#000000';
@@ -56,14 +58,32 @@ var app = {
         document.getElementById('videoLabel').innerHTML = 'Stopping video preview.....';
         document.getElementById('deviceready').querySelector('.received').style.color = '#000000';
         document.getElementById('deviceready').querySelector('.received').innerHTML = 'Stopping video.....';
-        cordova.plugins.Cam2Plug.startVideo(this.successCallback,this.errorCallback);
+        cordova.plugins.Cam2Plug.stopVideo(this.successCallback,this.errorCallback);
+    },
+
+    onIsFullyInitialisedClick: function() {
+        document.getElementById('videoLabel').style.color = '#000000';
+        document.getElementById('videoLabel').innerHTML = 'Finding out if plugin is fully initialised.....';
+        document.getElementById('deviceready').querySelector('.received').style.color = '#000000';
+        document.getElementById('deviceready').querySelector('.received').innerHTML = 'Checking init status.....';
+        cordova.plugins.Cam2Plug.isFullyInitialised(this.successCallback,this.errorCallback);
+    },
+
+    onCoolMethodClick: function() {
+        document.getElementById('videoLabel').style.color = '#000000';
+        document.getElementById('videoLabel').innerHTML = 'Firing up the echo.....';
+        document.getElementById('deviceready').querySelector('.received').style.color = '#000000';
+        document.getElementById('deviceready').querySelector('.received').innerHTML = 'Checking if echo works.....';
+        cordova.plugins.Cam2Plug.coolMethod('Heeeeeeeeeey!.....',this.successCallback,this.errorCallback);
     },
     // deviceready Event Handler.
     // Bind any cordova events here. Common events are: 'pause', 'resume', etc.
     onDeviceReady: function() {
         document.getElementById('startVideo').addEventListener('click', this.onStartVideoClick.bind(this), false);
         document.getElementById('stopVideo').addEventListener('click', this.onStopVideoClick.bind(this), false);
-        document.getElementById('videoLabel').innerHTML = 'Click event handlers calling <span class=\'strng\'>\'startVideo\'</span> and <span class=\'strng\'>\'startVideo\'</span> actions at service <span class=\'strng\'>\'Cam2Plug\'</span> are now bound to these two buttons...';
+        document.getElementById('isFullyInitialised').addEventListener('click', this.onIsFullyInitialisedClick.bind(this), false);
+        document.getElementById('coolMethod').addEventListener('click', this.onCoolMethodClick.bind(this), false);
+        document.getElementById('videoLabel').innerHTML = 'Click event handlers calling <span class=\'strng\'>\'startVideo\'</span>, <span class=\'strng\'>\'stopVideo\'</span>, <span class=\'strng\'>\'isFullyInittialised\'</span> and <span class=\'strng\'>\'coolMethod\'</span> actions at the <span class=\'strng\'>\'Cam2Plug\'</span> service are now bound to these four buttons...';
         this.receivedEvent('deviceready');
     },
 

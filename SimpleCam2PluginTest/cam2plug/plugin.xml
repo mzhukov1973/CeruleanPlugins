@@ -14,35 +14,38 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<plugin id="cw.plugins.cam2plug" 
-        version="0.0.1" 
-        xmlns="http://apache.org/cordova/ns/plugins/1.0" 
+<plugin id="cw.plugins.cam2plug"
+        version="0.0.1"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
- <name>cam2plug</name>
+ <name>Cam2Plug</name>
 
  <description>A simple, straight-up, neat camera2 Cordova-Android plugin, written mainly out of frustration and/or for testing.</description>
  <author>Maxim Zhukov</author>
  <keywords>"ecosystem:cordova","cordova-android","camera2","plugin","android"</keywords>
  <license>Apache-2.0</license>
 
- <js-module name="cam2plug" src="www/Cam2Plug.js">
-  <clobbers target="cordova.plugins.cam2plug" />
+ <js-module name="Cam2Plug" src="www/Cam2Plug.js">
+  <clobbers target="cordova.plugins.Cam2Plug" />
  </js-module>
 
  <platform name="android">
 
   <config-file parent="/*" target="res/xml/config.xml">
-   <feature name="cam2plug">
-    <param name="android-package" value="cw.plugins.cam2plug" />
+   <feature name="Cam2Plug">
+    <param name="android-package" value="cw.plugins.cam2plug.Cam2Plug" />
    </feature>
    <preference name="android-minSdkVersion" value="21" />
   </config-file>
 
   <config-file parent="/*" target="AndroidManifest.xml">
    <uses-permission android:name="android.permission.CAMERA"/>
-   <uses-feature android:name="android.hardware.camera" android:required="true" />
-   <uses-feature android:name="android.hardware.camera.front" android:required="true" />
+   <uses-feature android:name="android.hardware.camera"            android:required="true" />
+   <uses-feature android:name="android.hardware.camera.front"      android:required="true" />
+   <uses-feature android:name="android.hardware.camera.autofocus"  android:required="false"/>
+   <uses-feature android:name="android.hardware.camera.flash"      android:required="false"/>
+   <uses-feature android:name="android.hardware.camera.level.full" android:required="true" />
   </config-file>
 
   <source-file src="src/android/Cam2Plug.java" target-dir="src/cw/plugins/cam2plug" />
