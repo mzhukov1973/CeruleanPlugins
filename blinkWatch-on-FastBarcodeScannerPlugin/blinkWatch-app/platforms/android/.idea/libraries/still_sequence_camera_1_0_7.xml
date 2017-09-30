@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="still-sequence-camera-1.0.7">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/d763f8185d120f4844aab1c4bef3c06426486ce7/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/d763f8185d120f4844aab1c4bef3c06426486ce7/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.schaumburgit.fast-barcode-scanner/still-sequence-camera/1.0.7/4e69c32ecf5fcd97b4d1bc061e4c1ea440c7910d/still-sequence-camera-1.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
