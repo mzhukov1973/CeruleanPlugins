@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="tracking-barcode-scanner-1.0.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/ddfc5b247f095f397ac996ba1a0a59b0b6e11cc0/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/ddfc5b247f095f397ac996ba1a0a59b0b6e11cc0/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.schaumburgit.fast-barcode-scanner/tracking-barcode-scanner/1.0.7/1c98ef52ac0ee36a43ab22c61280b793b266e8c3/tracking-barcode-scanner-1.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

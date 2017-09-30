@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="fast-barcode-scanner-1.0.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/32fd97a944ec097cf1b05544b9c19d8722723ee0/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/32fd97a944ec097cf1b05544b9c19d8722723ee0/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.schaumburgit.fast-barcode-scanner/fast-barcode-scanner/1.0.7/42d45b628cc0bf107f172dd8df811c9d0a2bc2f0/fast-barcode-scanner-1.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
