@@ -64,7 +64,6 @@ import android.util.DisplayMetrics;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
-import android.util.Objects;
 
 import java.lang.Exception;
 import java.lang.IllegalArgumentException;
@@ -79,6 +78,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Objects;
 
 public class Cam2Plug extends CordovaPlugin {
 
@@ -156,39 +156,45 @@ public class Cam2Plug extends CordovaPlugin {
 
 /*===============================Assorted utilities===================================================================================================================*/
  private void sTst(final String s){
-  cordova.getActivity().runOnUiThread(new Runnable(){public void run(){Toast toast=Toast.makeText(cordova.getActivity().getApplicationContext(),s,Toast.LENGTH_SHORT);toast.show();}});
+  cordova.getActivity().runOnUiThread(new Runnable(){public void run(){Toast toast=Toast.makeText(cordova.getActivity().getApplicationContext(),s,Toast.LENGTH_LONG);toast.show();}});
  }
 
  @Override public void onPause(boolean multitasking) {/*App loses focus*/
   String lTG = "[onPause] ";
+  super.onPause(multitasking);
   LOG.v(gTG, lTG+"Pausing operations (app is loosing focus, but is still visible to the user). [multitasking is "+String.valueOf(multitasking)+".]....");
  }
 
  @Override public void onResume(boolean multitasking) {/*App regains focus*/
+  super.onResume(multitasking);
   String lTG = "[onResume] ";
   LOG.v(gTG, lTG+"Resuming operations (acquiring focus). [multitasking is "+String.valueOf(multitasking)+".]... ");
  }
 
  @Override public void onStart() { /*App becomes visible to the user*/
   String lTG = "[onStart] ";
+  super.onStart();
   LOG.v(gTG, lTG+"Starting operations (becoming visible to user). Checking if it is necessary to re-run pluginInitialize() and re-runnung it if it is... Most probably it is...");
   if (!isFullyInitialised) {pluginInitialize();}/*For now we only check CAMERA permission. Later we should check general hardware availability, etc, as well.*/
  }
 
  @Override public void onStop() {/*App stops being visible to the user*/
   String lTG = "[onStop] ";
+  super.onStop();
   LOG.v(gTG, lTG+"Stopping operations (becoming invisible to the user). Shutting down some stuff and releasing some resources (e.g. camera). Will have to re-initialise on Start...");
   /*Partial shutdown here.*/
  }
 
  @Override public void onReset() {/*WebView just did a top-level navigation or refreshed.*/
   String lTG = "[onReset] ";
+  super.onReset();
   LOG.v(gTG, lTG+"Plugins are supposed to stop any long-running processes and clean up internal state....");
   /*Partial shutdown here.*/
  }
 
  @Override public void onDestroy() {/*The one final call before Activity gets destroyed by the system. Clean-up and free all resources.*/
   String lTG = "[onDestroy] ";
+  super.onDestroy();
   LOG.v(gTG, lTG+"Activity (app) is to be destroyed by the OS. Do final clean-up, release every resource that's being held etc...");
   /*Final shutdown and clean-up here.*/
  }

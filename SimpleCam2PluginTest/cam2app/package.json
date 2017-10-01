@@ -1,8 +1,9 @@
 {
     "name": "cam2app",
     "displayName": "Simple Camera2 Cordova Plugin Testing App",
-    "version": "0.0.1",
+    "version": "0.0.2-alpha1",
     "description": "A simple app to test a simple camera2 cordova plugin (Cam2Plug).",
+    "homepage": "https://github.com/mzhukov1973/CeruleanPlugins/tree/master/SimpleCam2PluginTest",
     "keywords": [
         "ecosystem:cordova",
         "cordova-android",
@@ -20,11 +21,13 @@
     "license": "Apache-2.0",
     "dependencies": {
         "cordova-android": "^6.3.0",
-        "cordova-plugin-whitelist": "^1.3.2"
+        "cordova-plugin-whitelist": "^1.3.2",
+        "cw.plugins.cam2plug": "~0.0.1"
     },
     "cordova": {
         "plugins": {
-            "cordova-plugin-whitelist": {}
+            "cordova-plugin-whitelist": {},
+            "cw.plugins.cam2plug": {}
         }
     }
 }

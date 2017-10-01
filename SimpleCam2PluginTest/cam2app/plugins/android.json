@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "cw.plugins.cam2app"
+        },
+        "cw.plugins.cam2plug": {
+            "PACKAGE_NAME": "cw.plugins.cam2app"
         }
     },
     "dependent_plugins": {}

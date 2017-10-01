@@ -15,14 +15,15 @@
    limitations under the License.
 -->
 <plugin id="cw.plugins.cam2plug"
-        version="0.0.1"
+        version="0.0.2-alpha1"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
  <name>Cam2Plug</name>
 
  <description>A simple, straight-up, neat camera2 Cordova-Android plugin, written mainly out of frustration and/or for testing.</description>
- <author>Maxim Zhukov</author>
+ <author email="mzhukov31415dev@gmail.com" href="https://github.com/mzhukov1973">Maxim Zhukov</author>
+
  <keywords>"ecosystem:cordova","cordova-android","camera2","plugin","android"</keywords>
  <license>Apache-2.0</license>
 
@@ -35,8 +36,16 @@
   <config-file parent="/*" target="res/xml/config.xml">
    <feature name="Cam2Plug">
     <param name="android-package" value="cw.plugins.cam2plug.Cam2Plug" />
+<!--    <param name="onload" value="true" /> -->             <!-- Not for now, at least not yet.                                                      -->
    </feature>
-   <preference name="android-minSdkVersion" value="21" />
+   <preference name="android-minSdkVersion" value="21" />    <!-- To make sure Camera2 api is available.                                              -->
+   <preference name="BackgroundColor" value="FFA0A0A0" />    <!-- It's ARGB here.                                                                     -->
+   <preference name="Orientation" value="portrait" />        <!-- Also can be default (both are allowed) and landscape (locked in landscape-only).    -->
+   <preference name="AndroidLaunchMode" value="singleTop" /> <!-- singleTop is the default here, must try out other ways as well..                    -->
+   <preference name="KeepRunning" value="true" />            <!-- It's true by default, but still, just in case..                                     -->
+   <preference name="ShowTitle" value="false" />             <!-- Default here is false, and I have no idea if we need it, must try it out both ways. -->
+   <preference name="LogLevel" value="VERBOSE" />            <!-- Default level is ERROR.                                                             -->
+   <preference name="LoadingDialog" value="The loading dialogue title,Loading dialogue - the message itself (first comma, separating title and message will be autoremoved when parsing this string)." /> <!-- ?!?!?! and what about splashscreens?! -->
   </config-file>
 
   <config-file parent="/*" target="AndroidManifest.xml">
