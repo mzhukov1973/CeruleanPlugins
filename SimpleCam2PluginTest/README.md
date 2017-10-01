@@ -23,56 +23,76 @@
 
 ### Miscellaneous
 
-#### Creating Java=>JS communication channel:
+#### Creating Java -> js communication channel:
 
-   For Android (N.B.! works only from CordovaActivity):
+1. **The simplest, shortest method with practicaly no set-up required (N.B.! works only from `CordovaActivity` and seems to be generally frouned upon for some reason):**
+```java
+   this.appView.loadUrl("javascript:yourmethodname());");
+```
+   ###### Where `yourmethodname()` is the js function you want to call in `webView`.
+ 
+   So, to be called from `CordovaPlugin` it has to look like this:
+```java
+   this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
+```
 
-       this.appView.loadUrl("javascript:yourmethodname());"); // Where yourmethodname() is the js function you want to call in webView.
+   Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..
+   
+   E.g. something along these lines:
+```java
+   webView.loadUrlIntoView("javascript:yourmethodname());",true);
+```
+2. **Another method (works anywhere in your Java code though requires a tad more work to set up and use):**
 
-   So, to be called from CordovaPlugin it has to look like this:
+   1. Create a private `CallbackContext` in your `CordovaPlugin.`
+   2. Store there the `CallbackContext`, supplied to you from **js** via the `exec()` method.
+   3. Anywhere else in **Java** code you may use it to send a `PluginResult` back to **js**.
+   **N.B.!** the callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
 
-       this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
- or
-       cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
+   1. 
+   ```java
+      private CallbackContext callbackContext;
+   ```
+   2.
+   ```java
+     ...
+     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+       ... 
+       this.callbackContext = callbackContext; 
+       ...
+     }
+     ...
+   ```
+   3.
+   ```java
+      PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
+      pluginResult.setKeepCallback(true);
+      callbackContext.sendPluginResult(pluginResult);
+   ```
 
-   Interesting... Why go through CordovaActivity and not go directly through webView, since we already have it locally in CordovaPlugin?..
- E.g. something along these lines:
+3. **Seemingly the definitive way (from a comment in `CordovaWebView.java`):**
 
-       webView.loadUrlIntoView("javascript:yourmethodname());",true);
- or
-       this.webView.loadUrlIntoView("javascript:yourmethodname());",true);
--------
-   Another method (works anywhere in your java code though requires a tad more work to set up and use):
+Instead of executing snippets of **js**, you should use the exec bridge to create a **Java** -> **js** communication channel.
 
- 1. Create a private CallbackContext in your CordovaPlugin.
- 2. Store there the CallbackContext, supplied to you from JS via the exec() method.
- 3. Anywhere else in Java code you may use it to send a PluginResult back to JS.
- N.B.! the callback will become invalid after it gets triggered unless you set the KeepCallback of the PluginResult you are sending to true.
-
- (1) private CallbackContext callbackContext;
-      ...
-     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException
- (2)  { ... this.callbackContext = callbackContext; ... }
-      ...
- (3) PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
-     pluginResult.setKeepCallback(true);
-     callbackContext.sendPluginResult(pluginResult);
--------
-   Seemingly definitive way (from a comment in CordovaWebView.java):
-
-   Instead of executing snippets of JS, you should use the exec bridge to create a Java->JS communication channel.
-
-   To do this:
- 1. Within plugin.xml (to have your JS run before deviceready):
-      <js-module><runs/></js-module>
- 2. Within your .js (call exec on start-up):
+To do this:
+   1. Within **`plugin.xml`** (to have your **js** run before `deviceready`):
+   ```xml
+      <js-module>
+       <runs/>
+      </js-module>
+   ```
+   2. Within your **`.js`** (call `exec` on start-up):
+   ```java
       require('cordova/channel').onCordovaReady.subscribe(function() {
-require('cordova/exec')(win, null, 'Plugin', 'method', []);
-function win(message) {
-  ... process message from java here ...
-}
+        require('cordova/exec')(win, null, 'Plugin', 'method', []);
+        function win(message) {
+          ... process message from Java here ...
+        }
       });
- 3. Within your .java:
+   ```
+   3. Within your **`.java`**:
+   ```java
       PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);
       dataResult.setKeepCallback(true);
       savedCallbackContext.sendPluginResult(dataResult);
+   ```
