@@ -27,27 +27,27 @@
 ### Creating Java&#x2794;js communication channel:
 #### The simplest, shortest method with practicaly no set-up required:
  <sup>**N.B.!**</sup>*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*
->```javascript
+>```java
 >   this.appView.loadUrl("javascript:yourmethodname());");
 >   //Where yourmethodname() is the js function you want to call in webView.
 >```
 So, to be called from `CordovaPlugin` it has to look like this:
->```javascript
+>```java
 >   this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
 >```
 Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..
    
    E.g. something along these lines:
->```javascript
+>```java
 >   webView.loadUrlIntoView("javascript:yourmethodname());",true);
 >```
 #### Another method (works anywhere in your Java code though requires a tad more work to set up and use):
 1. Create a private `CallbackContext` in your `CordovaPlugin.`
->   ```javascript
+>   ```java
 >      private CallbackContext callbackContext;
 >   ```
 2. Store there the `CallbackContext`, supplied to you from **js** via the `exec()` method.
->   ```javascript
+>   ```java
 >     ...
 >     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 >       ... 
@@ -59,7 +59,7 @@ Interesting... Why go through `CordovaActivity` and not directly through `Cordov
 3. Anywhere else in **Java** code you may use it to send a `PluginResult` back to **js**.
 
    <sup>**N.B.!**</sup>The callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
->   ```javascript
+>   ```javas
 >      PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
 >      pluginResult.setKeepCallback(true);
 >      callbackContext.sendPluginResult(pluginResult);
@@ -84,7 +84,7 @@ Instead of executing snippets of **js**, you should use the exec bridge to creat
 >      });
 >   ```
 ###### 3. Within your **`.java`**:
->   ```javascript
+>   ```java
 >      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);
 >      dataResult.setKeepCallback(true);
 >      savedCallbackContext.sendPluginResult(dataResult);
