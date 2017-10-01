@@ -23,7 +23,7 @@
 
 ### Miscellaneous
 
-#### Creating Java -> js communication channel:
+#### Creating Java&#x2794;js communication channel:
 
 1. **The simplest, shortest method with practicaly no set-up required (N.B.! works only from `CordovaActivity` and seems to be generally frouned upon for some reason):**
 ```java
@@ -72,7 +72,7 @@
 
 3. **Seemingly the definitive way (from a comment in `CordovaWebView.java`):**
 
-Instead of executing snippets of **js**, you should use the exec bridge to create a **Java** -> **js** communication channel.
+Instead of executing snippets of **js**, you should use the exec bridge to create a **Java**&#x2794;**js** communication channel.
 
 To do this:
    1. Within **`plugin.xml`** (to have your **js** run before `deviceready`):
