@@ -15,7 +15,7 @@
 - [x] ~~Ignore anything related to old CAMERA api, got exclusively for CAMERA2.~~
 - [ ] Redo the semantics of `onRestart`, `onStart`, `onResume`, `onPause`, `onStop` and `onDestroy` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.
 ###### 0.0.2
-- [ ] *(phase<sup>2</sup>: when there are **some** resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and reacquisitioning hardware resources.
+- [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and reacquisitioning hardware resources.
 - [ ] Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
 - [ ] Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
 - [ ] Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
@@ -57,6 +57,7 @@ Interesting... Why go through `CordovaActivity` and not directly through `Cordov
 >     ...
 >   ```
 3. Anywhere else in **Java** code you may use it to send a `PluginResult` back to **js**.
+
    <sup>**N.B.!**</sup>The callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
 >   ```javascript
 >      PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
