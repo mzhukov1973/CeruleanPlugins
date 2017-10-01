@@ -26,7 +26,7 @@
 
 ### Creating Java&#x2794;js communication channel:
 #### The simplest, shortest method with practicaly no set-up required:
-***<sup>N.B.!</sup>**Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*
+ <sup>**N.B.!**</sup>*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*
 >```javascript
 >   this.appView.loadUrl("javascript:yourmethodname());");
 >   //Where yourmethodname() is the js function you want to call in webView.
@@ -57,7 +57,7 @@ Interesting... Why go through `CordovaActivity` and not directly through `Cordov
 >     ...
 >   ```
 3. Anywhere else in **Java** code you may use it to send a `PluginResult` back to **js**.
-   **<sup>N.B.!</sup>**The callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
+   <sup>**N.B.!**</sup>The callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
 >   ```javascript
 >      PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
 >      pluginResult.setKeepCallback(true);
@@ -67,10 +67,10 @@ Interesting... Why go through `CordovaActivity` and not directly through `Cordov
 Instead of executing snippets of **js**, you should use the exec bridge to create a **Java**&#x2794;**js** communication channel.
 
 ##### To do this:
-###### 1. Within **`plugin.xml`** (to have your **js** run before `deviceready`):
+###### 1. Within `plugin.xml` (to have your js run before `deviceready`):
 >   ```xml
 >      <js-module>
->       <runs/>
+>        <runs/>
 >      </js-module>
 >   ```
 ###### 2. Within your **`.js`** (call `exec` on start-up):
