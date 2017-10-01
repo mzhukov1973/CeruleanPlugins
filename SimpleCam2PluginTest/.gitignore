@@ -1,0 +1,6 @@
+debug-signing.properties
+release-signing.properties
+node_modules/
+*jks
+t/
+tp/

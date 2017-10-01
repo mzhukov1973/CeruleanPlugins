@@ -1,16 +1,17 @@
 {
   "name": "Cam2Plug",
-  "version": "0.0.1",
+  "version": "0.0.2-alpha1",
+  "id": "cw.plugins.cam2plug",
   "description": "A simple, straight-up, neat camera2 Cordova-Android plugin, written mainly out of frustration and/or for testing.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mzhukov1973/CeruleanPlugins"
+    "url": "https://github.com/mzhukov1973/CeruleanPlugins.git"
   },
   "bugs": {
     "url": "https://github.com/mzhukov1973/CeruleanPlugins/issues",
     "email": "mzhukov31415dev@gmail.com"
   },
-  "homepage":"https://github.com/mzhukov1973/CeruleanPlugins",
+  "homepage":"https://github.com/mzhukov1973/CeruleanPlugins/tree/master/SimpleCam2PluginTest",
   "cordova": {
     "id": "cw.plugins.cam2plug",
     "platforms": ["android"]

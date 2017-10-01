@@ -13,7 +13,7 @@ module.exports.metadata =
 // TOP OF METADATA
 {
   "cordova-plugin-whitelist": "1.3.2",
-  "cw.plugins.cam2plug": "0.0.1"
+  "cw.plugins.cam2plug": "0.0.2-alpha1"
 };
 // BOTTOM OF METADATA
 });

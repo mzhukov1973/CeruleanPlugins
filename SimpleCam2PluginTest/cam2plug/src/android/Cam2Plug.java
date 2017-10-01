@@ -89,7 +89,59 @@ public class Cam2Plug extends CordovaPlugin {
  private boolean hasCameraPermission = false;
  private boolean  isFullyInitialised = false;
 
-
+/*~FYI:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   For Android (N.B.! works only from CordovaActivity):                                                                                      */
+/*                                                                                                                                             */
+/*       this.appView.loadUrl("javascript:yourmethodname());"); // Where yourmethodname() is the js function you want to call in webView.      */
+/*                                                                                                                                             */
+/*   So, to be called from CordovaPlugin it has to look like this:                                                                             */
+/*                                                                                                                                             */
+/*       this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");                                                          */
+/*         or                                                                                                                                  */
+/*       cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");                                                               */
+/*                                                                                                                                             */
+/*   Interesting... Why go through CordovaActivity and not go directly through webView, since we already have it locally in CordovaPlugin?..   */
+/* E.g. something along these lines:                                                                                                           */
+/*                                                                                                                                             */
+/*       webView.loadUrlIntoView("javascript:yourmethodname());",true);                                                                        */
+/*         or                                                                                                                                  */
+/*       this.webView.loadUrlIntoView("javascript:yourmethodname());",true);                                                                   */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   Another method (works anywhere in your java code though requires a tad more work to set up and use):                                      */
+/*                                                                                                                                             */
+/* 1. Create a private CallbackContext in your CordovaPlugin.                                                                                  */
+/* 2. Store there the CallbackContext, supplied to you from JS via the exec() method.                                                          */
+/* 3. Anywhere else in Java code you may use it to send a PluginResult back to JS.                                                             */
+/* N.B.! the callback will become invalid after it gets triggered unless you set the KeepCallback of the PluginResult you are sending to true. */
+/*                                                                                                                                             */
+/* (1) private CallbackContext callbackContext;                                                                                                */
+/*      ...                                                                                                                                    */
+/*     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException                       */
+/* (2)  { ... this.callbackContext = callbackContext; ... }                                                                                    */
+/*      ...                                                                                                                                    */
+/* (3) PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");                                                           */
+/*     pluginResult.setKeepCallback(true);                                                                                                     */
+/*     callbackContext.sendPluginResult(pluginResult);                                                                                         */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   Seemingly definitive way (from a comment in CordovaWebView.java):                                                                         */
+/*                                                                                                                                             */
+/*   Instead of executing snippets of JS, you should use the exec bridge to create a Java->JS communication channel.                           */
+/*                                                                                                                                             */
+/*   To do this:                                                                                                                               */
+/* 1. Within plugin.xml (to have your JS run before deviceready):                                                                              */
+/*      <js-module><runs/></js-module>                                                                                                         */
+/* 2. Within your .js (call exec on start-up):                                                                                                 */
+/*      require('cordova/channel').onCordovaReady.subscribe(function() {                                                                       */
+/*        require('cordova/exec')(win, null, 'Plugin', 'method', []);                                                                          */
+/*        function win(message) {                                                                                                              */
+/*          ... process message from java here ...                                                                                             */
+/*        }                                                                                                                                    */
+/*      });                                                                                                                                    */
+/* 3. Within your .java:                                                                                                                       */
+/*      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);                                                              */
+/*      dataResult.setKeepCallback(true);                                                                                                      */
+/*      savedCallbackContext.sendPluginResult(dataResult);                                                                                     */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*======Exec method together with a wrapper to deal with potential problems with plugins delayed initialisation:======================================================*/
  @Override public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {return checkInitStateWrapper(action, args, callbackContext);}

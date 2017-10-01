@@ -19,6 +19,34 @@
                         {
                             "xml": "<preference name=\"android-minSdkVersion\" value=\"21\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"BackgroundColor\" value=\"FFA0A0A0\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"Orientation\" value=\"portrait\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"AndroidLaunchMode\" value=\"singleTop\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"KeepRunning\" value=\"true\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"ShowTitle\" value=\"false\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"LogLevel\" value=\"VERBOSE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"LoadingDialog\" value=\"The loading dialogue title,Loading dialogue - the message itself (first comma, separating title and message will be autoremoved when parsing this string).\" />",
+                            "count": 1
                         }
                     ]
                 }
@@ -76,6 +104,6 @@
     ],
     "plugin_metadata": {
         "cordova-plugin-whitelist": "1.3.2",
-        "cw.plugins.cam2plug": "0.0.1"
+        "cw.plugins.cam2plug": "0.0.2-alpha1"
     }
 }
