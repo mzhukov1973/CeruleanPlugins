@@ -13,7 +13,7 @@
 - [x] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
 - [x] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
 - [x] ~~Ignore anything related to old CAMERA api, got exclusively for CAMERA2.~~
-- [x] ~~Redo the semantics of `onRestart`, `onStart`, `onResume`, `onPause`, `onStop` and `onDestroy` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
+- [x] ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
 ##### 0.0.2
 - [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and reacquisitioning hardware resources.
 - [ ] Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
@@ -30,7 +30,7 @@
 
 >~~` 
 >this.appView.loadUrl("javascript:yourmethodname());");
->//Where yourmethodname() is the js function you want to call in webView.
+>/*Where yourmethodname() is the js function you want to call in webView.*/
 >`~~
 
 ~~So, to be called from `CordovaPlugin` it has to look like this:~~
@@ -64,7 +64,7 @@
 3. Anywhere else in **Java** code you may use it to send a `PluginResult` back to **js**.
 
    <sup>**N.B.!**</sup>The callback will become invalid after it gets triggered unless you set the `KeepCallback` of the `PluginResult` you are sending to `true`.
->   ```javas
+>   ```java
 >      PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");
 >      pluginResult.setKeepCallback(true);
 >      callbackContext.sendPluginResult(pluginResult);
@@ -79,7 +79,7 @@
 >        <runs/>
 >      </js-module>
 >   `~~
-###### ~~2. Within your **`.js`** (call `exec` on start-up):~~
+###### ~~2. Within your **`.js`** (call `exec()` on start-up):~~
 >   ~~`
 >      require('cordova/channel').onCordovaReady.subscribe(function() {
 >        require('cordova/exec')(win, null, 'Plugin', 'method', []);
@@ -95,3 +95,39 @@
 >      savedCallbackContext.sendPluginResult(dataResult);
 >   `~~
 
+### Java&#x2794;js data exchange format
+What gets sent from **Java** side of things is an [org.json.JSONObject](https://developer.android.com/reference/org/json/JSONObject.html). It gets analysed on **js** side and those of its set properties, that are recoginsed, get acted upon. No configuration of its contents should bring about catastrophic events - it's foolproofed contents-wise from the **js** side: anything that is not understood or doesn't strictly conform to the format (e.g. string as a value for a boolean property:
+
+>`{ ... "boolean_prop":`~~`"true"`~~`, ... }`
+
+instead of:
+
+>```java
+>{ ... "boolean_prop":true, ... }
+>```
+
+with an actual boolean value) gets silently ignored, save for diagnostics, dropped to `console.log()` and/or **Java**&#x2794;**js** comms status box if it is present.
+
+Here is the most complete form of the the JSON data object possible as it looks on the **Java** side, listing all the properties, recognized by the **js** side of things. 
+
+Should be kept up-to-date.
+>```java
+>{
+>  "initState": boolean,
+>  "camAccess": boolean,
+>  "camStatusTechnical": String,
+>  "camStatusSemantical": String
+>}
+>```
+
+>##### `camStatusTechnical` property can take following values:
+>- "Off"
+>- "Observing"
+>- "SettingUp"
+
+>##### `camStatusSemantical` property can take the following values:
+>- "Nothing"
+>- "SeeingSource(s)"
+>- "TrackingSource"
+>- "AttemptingToIdSource"
+>- "RecoginsedSource"
