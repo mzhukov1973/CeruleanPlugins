@@ -26,21 +26,26 @@
 
 ### Creating Java&#x2794;js communication channel:
 #### ~~The simplest, shortest method with practicaly no set-up required:~~
- <sup>~~**N.B.!**~~</sup>~~*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*~~
->  ```java 
->   this.appView.loadUrl("javascript:yourmethodname());");
->   //Where yourmethodname() is the js function you want to call in webView.
->  ``` 
-   ~~So, to be called from `CordovaPlugin` it has to look like this:~~
->```java
->   this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
->```
+<sup>~~**N.B.!**~~</sup>~~*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*~~
+
+>~~` 
+>this.appView.loadUrl("javascript:yourmethodname());");
+>//Where yourmethodname() is the js function you want to call in webView.
+>`~~
+
+~~So, to be called from `CordovaPlugin` it has to look like this:~~
+
+>~~`
+>this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
+>`~~
+
 ~~Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..~~
-   
-   ~~E.g. something along these lines:~~
->```java
+
+~~E.g. something along these lines:~~
+
+>~~`
 >   webView.loadUrlIntoView("javascript:yourmethodname());",true);
->```
+>`~~
 #### Another method (works anywhere in your Java code though requires a tad more work to set up and use):
 1. Create a private `CallbackContext` in your `CordovaPlugin.`
 >   ```java
@@ -69,24 +74,24 @@
 
 ##### ~~To do this:~~
 ###### ~~1. Within `plugin.xml` (to have your js run before `deviceready`):~~
->   ```xml
+>   ~~`
 >      <js-module>
 >        <runs/>
 >      </js-module>
->   ```
+>   `~~
 ###### ~~2. Within your **`.js`** (call `exec` on start-up):~~
->   ```javascript
+>   ~~`
 >      require('cordova/channel').onCordovaReady.subscribe(function() {
 >        require('cordova/exec')(win, null, 'Plugin', 'method', []);
 >        function win(message) {
 >          ... process message from Java here ...
 >        }
 >      });
->   ```
+>   `~~
 ###### ~~3. Within your **`.java`**:~~
->   ```java
+>   ~~`
 >      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);
 >      dataResult.setKeepCallback(true);
 >      savedCallbackContext.sendPluginResult(dataResult);
->   ```
+>   `~~
 
