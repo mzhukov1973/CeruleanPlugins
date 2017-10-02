@@ -20,6 +20,7 @@
 - [ ] Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
 - [ ] Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
 - [ ] **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/syntetic **js** events).
+- [ ] In case of comms chanell unavailability when attempting to send a message from Java to js messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consequitevely, once channel gets re-established.
 ###### 0.0.3
 
 ## Miscellaneous

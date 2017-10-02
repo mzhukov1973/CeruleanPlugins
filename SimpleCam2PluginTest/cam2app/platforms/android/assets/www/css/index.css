@@ -141,7 +141,11 @@ h1
  top:5px;
  right:5px;
  font-size:0.8rem;
+ width:33%;
+ background-color:rgba(255,255,255,0.4);
 }
+.topfloat0{font-size:0.8rem;font-weight:normal;display:inline-block;}
+.topfloat1{font-size:0.8rem;font-weight:700;display:inline;}
 
 div
 {
@@ -155,6 +159,6 @@ div
  font-size:1.2rem;
 }
 
-.black {color:rgba(0,  0,  0,  1);}
-.red   {color:rgba(220,0,  0,  1);}
-.green {color:rgba(0,220,  0,  1);}
+.black {color:rgba(   0,   0,   0, 1);}
+.red   {color:rgba( 190,   0,   0, 1);}
+.green {color:rgba(   0, 190,   0, 1);}

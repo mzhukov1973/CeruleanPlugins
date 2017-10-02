@@ -20,4 +20,4 @@ exports.startVideo           = function(success, error) {exec(success, error, "C
 exports.stopVideo            = function(success, error) {exec(success, error, "Cam2Plug",  "stopVideo");};
 exports.isFullyInitialised   = function(success, error) {exec(success, error, "Cam2Plug",  "isFullyInitialised");}; /*To poll for result*/
 exports.isFullyInitialized   = isFullyInitialised; /*There are all sorts of people*/                                /*To poll for result*/
-exports.establishJava2JsLink = function(success, error) {exec(success, error, "Cam2Plug", "establishJava2JsLink");}; /*To establish Java-->Js link*/
+exports.j2jsLinkCreate       = function(success, error) {exec(success, error, "Cam2Plug", "j2jsLinkCreate");};      /*To establish Java-->Js link*/
