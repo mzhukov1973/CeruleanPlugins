@@ -25,19 +25,19 @@
 ## Miscellaneous
 
 ### Creating Java&#x2794;js communication channel:
-#### The simplest, shortest method with practicaly no set-up required:
- <sup>**N.B.!**</sup>*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*
->```java
+#### ~~The simplest, shortest method with practicaly no set-up required:~~
+ <sup>~~**N.B.!**~~</sup>~~*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*~~
+>  ```java 
 >   this.appView.loadUrl("javascript:yourmethodname());");
 >   //Where yourmethodname() is the js function you want to call in webView.
->```
-So, to be called from `CordovaPlugin` it has to look like this:
+>  ``` 
+   ~~So, to be called from `CordovaPlugin` it has to look like this:~~
 >```java
 >   this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
 >```
-Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..
+~~Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..~~
    
-   E.g. something along these lines:
+   ~~E.g. something along these lines:~~
 >```java
 >   webView.loadUrlIntoView("javascript:yourmethodname());",true);
 >```
@@ -64,17 +64,17 @@ Interesting... Why go through `CordovaActivity` and not directly through `Cordov
 >      pluginResult.setKeepCallback(true);
 >      callbackContext.sendPluginResult(pluginResult);
 >   ```
-#### Seemingly the definitive way (from a comment in `CordovaWebView.java`):
-Instead of executing snippets of **js**, you should use the exec bridge to create a **Java**&#x2794;**js** communication channel.
+#### ~~Seemingly the definitive way (from a comment in `CordovaWebView.java`):~~
+~~Instead of executing snippets of **js**, you should use the exec bridge to create a **Java**&#x2794;**js** communication channel.~~
 
-##### To do this:
-###### 1. Within `plugin.xml` (to have your js run before `deviceready`):
+##### ~~To do this:~~
+###### ~~1. Within `plugin.xml` (to have your js run before `deviceready`):~~
 >   ```xml
 >      <js-module>
 >        <runs/>
 >      </js-module>
 >   ```
-###### 2. Within your **`.js`** (call `exec` on start-up):
+###### ~~2. Within your **`.js`** (call `exec` on start-up):~~
 >   ```javascript
 >      require('cordova/channel').onCordovaReady.subscribe(function() {
 >        require('cordova/exec')(win, null, 'Plugin', 'method', []);
@@ -83,7 +83,7 @@ Instead of executing snippets of **js**, you should use the exec bridge to creat
 >        }
 >      });
 >   ```
-###### 3. Within your **`.java`**:
+###### ~~3. Within your **`.java`**:~~
 >   ```java
 >      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);
 >      dataResult.setKeepCallback(true);
