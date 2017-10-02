@@ -6,6 +6,7 @@
     </feature>
     <feature name="Cam2Plug">
         <param name="android-package" value="cw.plugins.cam2plug.Cam2Plug" />
+        <param name="onload" value="true" />
     </feature>
     <name>cam2app</name>
     <description>A simple app to test a simple camera2 cordova plugin (Cam2Plug).</description>

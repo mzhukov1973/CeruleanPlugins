@@ -17,13 +17,25 @@ var app = {
     // Application Constructor:
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        app.strInitState = 'Unknown';
+        app.strInitStateColorClass = 'black';
     },
 
     onClickOpToggle:  function() {
      var body = document.body; if (body.style) {body.style.backgroundColor = 'rgba(0,0,0,0.01)'; body.style.backgroundImage = ''; setTimeout(function() { body.style.backgroundColor = 'transparent'; }, 1); if (body.parentNode && body.parentNode.style) { body.parentNode.style.backgroundColor = 'transparent'; body.parentNode.style.backgroundImage = ''; }}
     },
 
-
+    javaToJsCallback: function(jsonObj) {
+     /*Dump received stringified JSON object as string to console:*/
+     console.log('Java=>js link: data received (should be a JSON object as a string): '+JSON.stringify(jsonObj)+'.');
+     /*Then parse it into a js object and proceed reacting to its properties:*/
+     if (Object.prototype.hasOwnProperty.call(jsonObj, 'initState'))
+     {
+      if (jsonObj['initState']) {app.strInitState = 'Fully'; app.strInitStateColorClass = 'green'} else {app.strInitState = 'Not Fully';app.strInitStateColorClass = 'red'};
+      console.log( 'Java=>js link: Cam2Plug plugin is currently: \''+app.strInitState+' initialised\'!');
+      document.getElementById('topfloat').innerHTML = 'Cam2Plug initialisation state: <span class=\''+app.strInitStateColorClass+'\'>'+app.strInitState+'</span>';
+     }
+    },
 
     successCallback: function(success_txt) {
      var strTxt = 'cordova.plugins.Cam2Plug: SUCCESS! (message:\''+JSON.stringify(success_txt)+'\')';
@@ -42,8 +54,6 @@ var app = {
      document.getElementById('deviceready').querySelector('.received').style.color = '#FF0000';
      document.getElementById('deviceready').querySelector('.received').innerHTML = 'Error!';
     },
-
-
 
     onStartVideoClick: function() {
         document.getElementById('videoLabel').style.color = '#000000';
@@ -84,6 +94,7 @@ var app = {
         document.getElementById('isFullyInitialised').addEventListener('click', this.onIsFullyInitialisedClick.bind(this), false);
         document.getElementById('coolMethod').addEventListener('click', this.onCoolMethodClick.bind(this), false);
         document.getElementById('videoLabel').innerHTML = 'Click event handlers calling <span class=\'strng\'>\'startVideo\'</span>, <span class=\'strng\'>\'stopVideo\'</span>, <span class=\'strng\'>\'isFullyInittialised\'</span> and <span class=\'strng\'>\'coolMethod\'</span> actions at the <span class=\'strng\'>\'Cam2Plug\'</span> service are now bound to these four buttons...';
+        cordova.plugins.Cam2Plug.establishJava2JsLink(this.javaToJsCallback,this.javaToJsCallback); /*Establish the Java=>js link.*/
         this.receivedEvent('deviceready');
     },
 

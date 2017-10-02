@@ -15,8 +15,9 @@
 /****************************************************************************/
 var exec = require('cordova/exec');
 
-exports.coolMethod         = function(arg0, success, error) {exec(success, error, "Cam2Plug", "coolMethod", [arg0]);};
-exports.startVideo         = function(success, error) {exec(success, error, "Cam2Plug", "startVideo");};
-exports.stopVideo          = function(success, error) {exec(success, error, "Cam2Plug",  "stopVideo");};
-exports.isFullyInitialised = function(success, error) {exec(success, error, "Cam2Plug",  "isFullyInitialised");}; /*To poll for result*/
-exports.isFullyInitialized = isFullyInitialised; /*There are all sorts of people*/                                /*To poll for result*/
+exports.coolMethod           = function(arg0, success, error) {exec(success, error, "Cam2Plug", "coolMethod", [arg0]);};
+exports.startVideo           = function(success, error) {exec(success, error, "Cam2Plug", "startVideo");};
+exports.stopVideo            = function(success, error) {exec(success, error, "Cam2Plug",  "stopVideo");};
+exports.isFullyInitialised   = function(success, error) {exec(success, error, "Cam2Plug",  "isFullyInitialised");}; /*To poll for result*/
+exports.isFullyInitialized   = isFullyInitialised; /*There are all sorts of people*/                                /*To poll for result*/
+exports.establishJava2JsLink = function(success, error) {exec(success, error, "Cam2Plug", "establishJava2JsLink");}; /*To establish Java-->Js link*/

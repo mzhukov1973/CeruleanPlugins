@@ -1,5 +1,5 @@
 # CeruleanPlugins Cordova-Android Camera2 test plugin/app
-##### Version: 0.0.2-alpha1
+##### Version: 0.0.2
 
 ## ToDo:
 ##### 0.0.0
@@ -11,16 +11,16 @@
 - [x] ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
 - [x] ~~*(phase<sup>1</sup>: when there're no actual hardware resources invloved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and reacquisitioning hardware resources.~~
 - [x] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
-- [ ] Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.
+- [x] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
 - [x] ~~Ignore anything related to old CAMERA api, got exclusively for CAMERA2.~~
-- [ ] Redo the semantics of `onRestart`, `onStart`, `onResume`, `onPause`, `onStop` and `onDestroy` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.
-###### 0.0.2
+- [x] ~~Redo the semantics of `onRestart`, `onStart`, `onResume`, `onPause`, `onStop` and `onDestroy` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
+##### 0.0.2
 - [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and reacquisitioning hardware resources.
 - [ ] Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
 - [ ] Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
 - [ ] Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
 - [ ] **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/syntetic **js** events).
-
+###### 0.0.3
 
 ## Miscellaneous
 

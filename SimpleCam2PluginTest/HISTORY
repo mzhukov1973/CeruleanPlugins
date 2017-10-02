@@ -6,10 +6,12 @@ Version History
 0.0.1:
       - Wrote two clean template apps (an app and a plugin that is), that build nicely together with no warnings and all according to best practices, as far as they can be fathomed in this case.
 
-0.0.2-alpha1:
+0.0.2:
       - Apps' initialisation is two-staged (pluginInitialize() and deferredPluginInitialisation()) - the second one gets deferred until CAMERA access permission is obtained.
       - Until the deferred part of the initialisation is complete app functions normally, except for the specific functions (i.e. plugins' actions, java plugins' classs' methods) that require CAMERA access.
       - When attempting to make use of these CAMERA-related functions before the app is fully initialised, plugin fails gracefully, infroming the user (via a long Toast) about the necessity of granting the app CAMERA permissions in order for these functions to become available.
       - Exposed a method (.isFullyInitialised(success,error)/.isFullyInitialized(success,error)) to JS to query the initialisation state of the plugin.
       - Ignoring anything related to old CAMERA api, got exclusively for CAMERA2. Set minimal Android SDK api to 21.
       - (phase 1: when there's no actual HW resources invloved yet) Implemented proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and reacquisitioning hardware resources (which at the moment we have  almost no of).
+      - Arranged for the js part of the app to be able to just listen on an event (as is with the deviceready one) to be notified of changes to plugins' initialisation state.
+      - Redone the semantics of onRestart, onStart, onResume, onPause, onStop and onDestroy event handlers, taking into account the material from Android developers' guide article on Activity class.

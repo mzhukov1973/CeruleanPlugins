@@ -88,8 +88,61 @@ public class Cam2Plug extends CordovaPlugin {
  private static final int   REQ_CODE = 0;
  private boolean hasCameraPermission = false;
  private boolean  isFullyInitialised = false;
-
-
+/*Context for sending events to js:*/
+ private CallbackContext commsCallbackContext = null;
+/*~FYI:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   For Android (N.B.! works only from CordovaActivity):                                                                                      */
+/*                                                                                                                                             */
+/*       this.appView.loadUrl("javascript:yourmethodname());"); // Where yourmethodname() is the js function you want to call in webView.      */
+/*                                                                                                                                             */
+/*   So, to be called from CordovaPlugin it has to look like this:                                                                             */
+/*                                                                                                                                             */
+/*       this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");                                                          */
+/*         or                                                                                                                                  */
+/*       cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");                                                               */
+/*                                                                                                                                             */
+/*   Interesting... Why go through CordovaActivity and not go directly through webView, since we already have it locally in CordovaPlugin?..   */
+/* E.g. something along these lines:                                                                                                           */
+/*                                                                                                                                             */
+/*       webView.loadUrlIntoView("javascript:yourmethodname());",true);                                                                        */
+/*         or                                                                                                                                  */
+/*       this.webView.loadUrlIntoView("javascript:yourmethodname());",true);                                                                   */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   Another method (works anywhere in your java code though requires a tad more work to set up and use):                                      */
+/*                                                                                                                                             */
+/* 1. Create a private CallbackContext in your CordovaPlugin.                                                                                  */
+/* 2. Store there the CallbackContext, supplied to you from JS via the exec() method.                                                          */
+/* 3. Anywhere else in Java code you may use it to send a PluginResult back to JS.                                                             */
+/* N.B.! the callback will become invalid after it gets triggered unless you set the KeepCallback of the PluginResult you are sending to true. */
+/*                                                                                                                                             */
+/* (1) private CallbackContext callbackContext;                                                                                                */
+/*      ...                                                                                                                                    */
+/*     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException                       */
+/* (2)  { ... this.callbackContext = callbackContext; ... }                                                                                    */
+/*      ...                                                                                                                                    */
+/* (3) PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "WHAT");                                                           */
+/*     pluginResult.setKeepCallback(true);                                                                                                     */
+/*     callbackContext.sendPluginResult(pluginResult);                                                                                         */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*   Seemingly definitive way (from a comment in CordovaWebView.java):                                                                         */
+/*                                                                                                                                             */
+/*   Instead of executing snippets of JS, you should use the exec bridge to create a Java->JS communication channel.                           */
+/*                                                                                                                                             */
+/*   To do this:                                                                                                                               */
+/* 1. Within plugin.xml (to have your JS run before deviceready):                                                                              */
+/*      <js-module><runs/></js-module>                                                                                                         */
+/* 2. Within your .js (call exec on start-up):                                                                                                 */
+/*      require('cordova/channel').onCordovaReady.subscribe(function() {                                                                       */
+/*        require('cordova/exec')(win, null, 'Plugin', 'method', []);                                                                          */
+/*        function win(message) {                                                                                                              */
+/*          ... process message from java here ...                                                                                             */
+/*        }                                                                                                                                    */
+/*      });                                                                                                                                    */
+/* 3. Within your .java:                                                                                                                       */
+/*      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);                                                              */
+/*      dataResult.setKeepCallback(true);                                                                                                      */
+/*      savedCallbackContext.sendPluginResult(dataResult);                                                                                     */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*======Exec method together with a wrapper to deal with potential problems with plugins delayed initialisation:======================================================*/
  @Override public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {return checkInitStateWrapper(action, args, callbackContext);}
@@ -97,8 +150,9 @@ public class Cam2Plug extends CordovaPlugin {
  private boolean checkInitStateWrapper(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
   String lTG = "[checkInitStateWrapper] ", msg="";boolean actionIsKnown = false;
   /*-------------Actions, that do not depend on full initialisation of plugin:-------------*/
-  if      (action.equals("isFullyInitialised")) {if(isFullyInitialised){callbackContext.success("true");}else{callbackContext.error("false");} return true;}
-  else if (action.equals("coolMethod"))         {String message = args.getString(0);coolMethod(message, callbackContext);                      return true;}
+  if      (action.equals("isFullyInitialised"))   {if(isFullyInitialised){callbackContext.success("true");}else{callbackContext.error("false");} return true;}
+  else if (action.equals("coolMethod"))           {String message = args.getString(0);coolMethod(message, callbackContext);                      return true;}
+  else if (action.equals("establishJava2JsLink")) {this.commsCallbackContext = callbackContext;                                                  return true;}
   /*-------------And actions, that do:-----------------------------------------------------*/
   if      (action.equals("startVideo")) { if (isFullyInitialised) {startVideo(callbackContext);return true;} else {actionIsKnown=true;} }
   else if (action.equals("stopVideo"))  { if (isFullyInitialised) {stopVideo(callbackContext); return true;} else {actionIsKnown=true;} }
@@ -119,9 +173,14 @@ public class Cam2Plug extends CordovaPlugin {
   LOG.setLogLevel(LOG.VERBOSE);
   LOG.i(gTG, lTG+"Logging is on. LOGLEVEL has been set to INFO.");
   LOG.d(gTG, lTG+"Checking for CAMERA permission and requesting it if necessary... Currently it is set to "+String.valueOf(cordova.hasPermission(CAMERA))+".");
-  if (!cordova.hasPermission(CAMERA)) {cordova.requestPermission(this, REQ_CODE, CAMERA);}
-  else
-  {
+  if (!cordova.hasPermission(CAMERA)) {
+   LOG.d(gTG, lTG+"We have no CAMERA permission! Proceeding to request it in order to be able to complete the initialisation...");
+   hasCameraPermission = false;
+   isFullyInitialised  = false;
+   notifyJs_InitState();
+   cordova.requestPermission(this, REQ_CODE, CAMERA);
+  }
+  else {
    LOG.d(gTG, lTG+"We have the CAMERA permission! Proceeding with the rest of initialisation...");
    hasCameraPermission = true;
    deferredPluginInitialisation();
@@ -135,6 +194,8 @@ public class Cam2Plug extends CordovaPlugin {
   if (!hasCameraPermission)
   {
    LOG.i(gTG, lTG+"This is bad - we were not given CAMERA permission. There is no way we can work now.");
+   isFullyInitialised = false;
+   notifyJs_InitState();
   }
   else
   {
@@ -148,13 +209,34 @@ public class Cam2Plug extends CordovaPlugin {
 //  getProperCamera();
   isFullyInitialised = true;
   LOG.d(gTG, lTG+"Plugin initialisation is now complete.");
-//Also send some sort of message/event to JS so that it would be able to not only poll plugins' initialisation state, but also to setup an EventListener and react to its' firing...*/
+  notifyJs_InitState();
  }
 /*====================================================================================================================================================================*/
 
 
 
 /*===============================Assorted utilities===================================================================================================================*/
+ private void sendToJs(int status, JSONObject msg) {
+  PluginResult dataResult = new PluginResult((status==0)?PluginResult.Status.OK:PluginResult.Status.ERROR, msg);
+  dataResult.setKeepCallback(true);
+  commsCallbackContext.sendPluginResult(dataResult);
+ }
+
+ private void notifyJs_InitState() {
+   String lTG = "[notifyJs_InitState] ";
+   if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about initialisation state, but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
+   else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about initialisation state, but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
+   else {
+     LOG.d(gTG, lTG+"Notifying js about initialisation state....");
+     try { sendToJs(0, new JSONObject("{\"initState\":" + String.valueOf(this.isFullyInitialised) + "}")); }
+     catch(JSONException e) {
+       LOG.d(gTG, lTG+String.format("Exception! Caught %s! (%s) Not fatal, re-throwing it as an RuntimeException and moving on.",e.toString().substring(0,e.toString().indexOf(':')),e.getMessage()));
+       sTst( lTG+String.format("Exception! Caught %s! (%s).",e.toString().substring(0,e.toString().indexOf(':')),e.getMessage()) );
+       throw new RuntimeException(e);
+     }
+   }
+ }
+
  private void sTst(final String s){
   cordova.getActivity().runOnUiThread(new Runnable(){public void run(){Toast toast=Toast.makeText(cordova.getActivity().getApplicationContext(),s,Toast.LENGTH_LONG);toast.show();}});
  }
@@ -181,6 +263,8 @@ public class Cam2Plug extends CordovaPlugin {
  @Override public void onStop() {/*App stops being visible to the user*/
   String lTG = "[onStop] ";
   super.onStop();
+  isFullyInitialised = false;
+  notifyJs_InitState();
   LOG.v(gTG, lTG+"Stopping operations (becoming invisible to the user). Shutting down some stuff and releasing some resources (e.g. camera). Will have to re-initialise on Start...");
   /*Partial shutdown here.*/
  }

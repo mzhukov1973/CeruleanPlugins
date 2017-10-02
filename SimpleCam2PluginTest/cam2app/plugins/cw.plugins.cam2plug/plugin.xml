@@ -36,7 +36,7 @@
   <config-file parent="/*" target="res/xml/config.xml">
    <feature name="Cam2Plug">
     <param name="android-package" value="cw.plugins.cam2plug.Cam2Plug" />
-<!--    <param name="onload" value="true" /> -->             <!-- Not for now, at least not yet.                                                      -->
+    <param name="onload" value="true" />                     <!-- Not for now, at least not yet.                                                      -->
    </feature>
    <preference name="android-minSdkVersion" value="21" />    <!-- To make sure Camera2 api is available.                                              -->
    <preference name="BackgroundColor" value="FFA0A0A0" />    <!-- It's ARGB here.                                                                     -->

@@ -88,7 +88,8 @@ public class Cam2Plug extends CordovaPlugin {
  private static final int   REQ_CODE = 0;
  private boolean hasCameraPermission = false;
  private boolean  isFullyInitialised = false;
-
+/*Context for sending events to js:*/
+ private CallbackContext commsCallbackContext = null;
 /*~FYI:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*   For Android (N.B.! works only from CordovaActivity):                                                                                      */
 /*                                                                                                                                             */
@@ -149,8 +150,9 @@ public class Cam2Plug extends CordovaPlugin {
  private boolean checkInitStateWrapper(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
   String lTG = "[checkInitStateWrapper] ", msg="";boolean actionIsKnown = false;
   /*-------------Actions, that do not depend on full initialisation of plugin:-------------*/
-  if      (action.equals("isFullyInitialised")) {if(isFullyInitialised){callbackContext.success("true");}else{callbackContext.error("false");} return true;}
-  else if (action.equals("coolMethod"))         {String message = args.getString(0);coolMethod(message, callbackContext);                      return true;}
+  if      (action.equals("isFullyInitialised"))   {if(isFullyInitialised){callbackContext.success("true");}else{callbackContext.error("false");} return true;}
+  else if (action.equals("coolMethod"))           {String message = args.getString(0);coolMethod(message, callbackContext);                      return true;}
+  else if (action.equals("establishJava2JsLink")) {this.commsCallbackContext = callbackContext;                                                  return true;}
   /*-------------And actions, that do:-----------------------------------------------------*/
   if      (action.equals("startVideo")) { if (isFullyInitialised) {startVideo(callbackContext);return true;} else {actionIsKnown=true;} }
   else if (action.equals("stopVideo"))  { if (isFullyInitialised) {stopVideo(callbackContext); return true;} else {actionIsKnown=true;} }
@@ -171,9 +173,14 @@ public class Cam2Plug extends CordovaPlugin {
   LOG.setLogLevel(LOG.VERBOSE);
   LOG.i(gTG, lTG+"Logging is on. LOGLEVEL has been set to INFO.");
   LOG.d(gTG, lTG+"Checking for CAMERA permission and requesting it if necessary... Currently it is set to "+String.valueOf(cordova.hasPermission(CAMERA))+".");
-  if (!cordova.hasPermission(CAMERA)) {cordova.requestPermission(this, REQ_CODE, CAMERA);}
-  else
-  {
+  if (!cordova.hasPermission(CAMERA)) {
+   LOG.d(gTG, lTG+"We have no CAMERA permission! Proceeding to request it in order to be able to complete the initialisation...");
+   hasCameraPermission = false;
+   isFullyInitialised  = false;
+   notifyJs_InitState();
+   cordova.requestPermission(this, REQ_CODE, CAMERA);
+  }
+  else {
    LOG.d(gTG, lTG+"We have the CAMERA permission! Proceeding with the rest of initialisation...");
    hasCameraPermission = true;
    deferredPluginInitialisation();
@@ -187,6 +194,8 @@ public class Cam2Plug extends CordovaPlugin {
   if (!hasCameraPermission)
   {
    LOG.i(gTG, lTG+"This is bad - we were not given CAMERA permission. There is no way we can work now.");
+   isFullyInitialised = false;
+   notifyJs_InitState();
   }
   else
   {
@@ -200,13 +209,34 @@ public class Cam2Plug extends CordovaPlugin {
 //  getProperCamera();
   isFullyInitialised = true;
   LOG.d(gTG, lTG+"Plugin initialisation is now complete.");
-//Also send some sort of message/event to JS so that it would be able to not only poll plugins' initialisation state, but also to setup an EventListener and react to its' firing...*/
+  notifyJs_InitState();
  }
 /*====================================================================================================================================================================*/
 
 
 
 /*===============================Assorted utilities===================================================================================================================*/
+ private void sendToJs(int status, JSONObject msg) {
+  PluginResult dataResult = new PluginResult((status==0)?PluginResult.Status.OK:PluginResult.Status.ERROR, msg);
+  dataResult.setKeepCallback(true);
+  commsCallbackContext.sendPluginResult(dataResult);
+ }
+
+ private void notifyJs_InitState() {
+   String lTG = "[notifyJs_InitState] ";
+   if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about initialisation state, but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
+   else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about initialisation state, but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
+   else {
+     LOG.d(gTG, lTG+"Notifying js about initialisation state....");
+     try { sendToJs(0, new JSONObject("{\"initState\":" + String.valueOf(this.isFullyInitialised) + "}")); }
+     catch(JSONException e) {
+       LOG.d(gTG, lTG+String.format("Exception! Caught %s! (%s) Not fatal, re-throwing it as an RuntimeException and moving on.",e.toString().substring(0,e.toString().indexOf(':')),e.getMessage()));
+       sTst( lTG+String.format("Exception! Caught %s! (%s).",e.toString().substring(0,e.toString().indexOf(':')),e.getMessage()) );
+       throw new RuntimeException(e);
+     }
+   }
+ }
+
  private void sTst(final String s){
   cordova.getActivity().runOnUiThread(new Runnable(){public void run(){Toast toast=Toast.makeText(cordova.getActivity().getApplicationContext(),s,Toast.LENGTH_LONG);toast.show();}});
  }
@@ -233,6 +263,8 @@ public class Cam2Plug extends CordovaPlugin {
  @Override public void onStop() {/*App stops being visible to the user*/
   String lTG = "[onStop] ";
   super.onStop();
+  isFullyInitialised = false;
+  notifyJs_InitState();
   LOG.v(gTG, lTG+"Stopping operations (becoming invisible to the user). Shutting down some stuff and releasing some resources (e.g. camera). Will have to re-initialise on Start...");
   /*Partial shutdown here.*/
  }
