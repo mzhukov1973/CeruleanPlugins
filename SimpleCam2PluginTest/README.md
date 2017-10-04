@@ -22,28 +22,28 @@
 - &#x274F; **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
 - &#x274F; In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
 - [&#x00B1;] Get to the Camera:
-   - [&#x2714;] Identify all available cameras, choose the two we need, i.e. front and back cameras.
+   - [&#x2714;] ~~Identify all available cameras, choose the two we need, i.e. front and back cameras.~~
    - [&#x00B1;] Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
-      - [&#x2714;] Minimal resolution available when using the format, that is most easy overhead-wise.
+      - [&#x2714;] ~~Minimal resolution available when using the format, that is most easy overhead-wise.~~
       - &#x274F; Maximum expected sustained FPS at that resolution.
          - &#x274F; Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
       - [&#x00B1;] Ability to switch off unneeded complications, most importantly:
-         - [&#x2714;] Auto-focus
-         - [&#x2714;] Automatic exposure
+         - [&#x2714;] ~~Auto-focus~~
+         - [&#x2714;] ~~Automatic exposure~~
       - &#x274F; Presence of high-speed burst video capture capability. And more specifically:
          - &#x274F; Formats and frame dimensions, supported in high-speed capture mode.
          - &#x274F; The smallest available resolution for this mode, coupled with the appropriate image format.
          - &#x274F; The best FPS we can reliably expect under these circumstances.
             - &#x274F; Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
          - &#x274F; Maximum high-speed capture burst duration we can attain on this device in practical terms.
-   - [&#x2714;] Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.
+   - [&#x2714;] ~~Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.~~
    - &#x274F; Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
    - [&#x00B1;] Arrange reporting this info to **js** side both on demand and on change. 
-      - [&#x2714;] At first just dumping it all is enough.
+      - [&#x2714;] ~~At first just dumping it all is enough.~~
       - &#x274F; Next step would be to implement an ability to poll just a subset of this data.
       - &#x274F; With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
       - &#x274F; The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
-   - [&#x2714;] Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).
+   - [&#x2714;] ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
    - &#x274F; Implement (switchable on and off) video stream output to a visible surface.
    - &#x274F; Implement video output to an Allocation surface, remaining completely in the background.
    - &#x274F; At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
