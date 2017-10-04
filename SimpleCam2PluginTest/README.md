@@ -180,18 +180,19 @@ Should be kept up-to-date.
 ###### Prototypes:
 
 ```java
-private void notifyJs_bool(String propName,boolean propValue);
-private void notifyJs_String(String propName,String propValue);
+private void       notifyJs_bool(String propName, boolean    propValue);
+private void     notifyJs_String(String propName, String     propValue);
 private void notifyJs_JSONObject(String propName, JSONObject propValue);
 ```
 
 ###### The way they are actually used (with actual parameters - the list is supposed to be exhaustive):
 
 ```java
-      notifyJs_bool("initState", isFullyInitialised     );
-      notifyJs_bool("camAccess", hasCameraPermission    );
-notifyJs_JSONObject("camState",  cameraState            );
-notifyJs_JSONObject("errors",    JSONObject cameraIdsEtc);
+      notifyJs_bool("initState", isFullyInitialised );
+      notifyJs_bool("camAccess", hasCameraPermission);
+    notifyJs_String("errors",    <various strings>  );
+notifyJs_JSONObject("camState",  cameraState        );
+notifyJs_JSONObject("errors",    cameraIdsEtc       );
 ```
 
 
