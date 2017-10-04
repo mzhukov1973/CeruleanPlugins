@@ -178,10 +178,10 @@ public class Cam2Plug extends CordovaPlugin {
 /* private void notifyJs_String(String propName,String propValue);          */
 /* private void notifyJs_JSONObject(String propName, JSONObject propValue); */
 /*--------------------------------------------------------------------------*/
-/*       notifyJs_bool("initState", isFullyInitialised );                   */
-/*       notifyJs_bool("camAccess", hasCameraPermission);                   */
-/* notifyJs_JSONObject("camState",  cameraState        );                   */
-/* notifyJs_JSONObject("errors",    JSONObject <any>   );                   */
+/*       notifyJs_bool("initState", isFullyInitialised     );               */
+/*       notifyJs_bool("camAccess", hasCameraPermission    );               */
+/* notifyJs_JSONObject("camState",  cameraState            );               */
+/* notifyJs_JSONObject("errors",    JSONObject cameraIdsEtc);               */
 /*--------------------------------------------------------------------------*/
 
  private void notifyJs_bool(String propName,boolean propValue) {
@@ -390,16 +390,16 @@ public class Cam2Plug extends CordovaPlugin {
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_MODE_OFF):
+         case CameraCharacteristics.CONTROL_MODE_OFF:
           controlModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_AUTO):
+         case CameraCharacteristics.CONTROL_MODE_AUTO:
           controlModes.put("AUTO",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE):
+         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE:
           controlModes.put("USE_SCENE_MODE",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE):
+         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE:
           controlModes.put("OFF_KEEP_STATE",tmpAr[i]);
          break;
          default:
@@ -431,7 +431,7 @@ public class Cam2Plug extends CordovaPlugin {
           case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
             tmpCamObj.put("INFO_SUPPORTED_HARDWARE_LEVEL","FULL");
           break;
-          case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3::
+          case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3:
             tmpCamObj.put("INFO_SUPPORTED_HARDWARE_LEVEL","3");
           break;
           default:
@@ -456,12 +456,12 @@ public class Cam2Plug extends CordovaPlugin {
              tmpCamObj.put("highestFPSAssessment",tmpFPSAttempt.toString());
            }
          }
-         
+
            /*Size[] getHighSpeedVideoSizesFor (Range<Integer> fpsRange)*/
            /*Range[]<Integer> getHighSpeedVideoFpsRanges ()*/
 
-       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].toString());
-     
+       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].toString()));
+
        if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_FRAME_DURATION", "null");}
 
        if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_MAX_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", "null");}
@@ -472,19 +472,19 @@ public class Cam2Plug extends CordovaPlugin {
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_AE_MODE_OFF):
+         case CameraCharacteristics.CONTROL_AE_MODE_OFF:
           controlAEModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON:
           controlAEModes.put("ON",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH:
           controlAEModes.put("ON_AUTO_FLASH",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH:
           controlAEModes.put("ON_ALWAYS_FLASH",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTOFLASH_REDEYE):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTOFLASH_REDEYE:
           controlAEModes.put("ON_AUTOFLASH_REDEYE",tmpAr[i]);
          break;
          default:
@@ -499,16 +499,16 @@ public class Cam2Plug extends CordovaPlugin {
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_MODE_OFF):
+         case CameraCharacteristics.CONTROL_MODE_OFF:
           controlModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_AUTO):
+         case CameraCharacteristics.CONTROL_MODE_AUTO:
           controlModes.put("AUTO",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE):
+         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE:
           controlModes.put("USE_SCENE_MODE",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE):
+         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE:
           controlModes.put("OFF_KEEP_STATE",tmpAr[i]);
          break;
          default:

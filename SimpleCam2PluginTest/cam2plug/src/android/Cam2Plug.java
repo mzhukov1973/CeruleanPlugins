@@ -181,7 +181,7 @@ public class Cam2Plug extends CordovaPlugin {
 /*       notifyJs_bool("initState", isFullyInitialised     );               */
 /*       notifyJs_bool("camAccess", hasCameraPermission    );               */
 /* notifyJs_JSONObject("camState",  cameraState            );               */
-/* notifyJs_JSONObject("errors",    JSONObject cameraIdsEtc);               */
+/* notifyJs_JSONObject("errors",    JSONObject camerasIdsEtc);              */
 /*--------------------------------------------------------------------------*/
 
  private void notifyJs_bool(String propName,boolean propValue) {
@@ -274,7 +274,7 @@ public class Cam2Plug extends CordovaPlugin {
 
 
 /*=======================================Cam-related stuff============================================================================================================*/
- private Activity theActivity; /* ACTIVITY IS THE CONTEXT!!!!! */
+ private android.app.Activity theActivity; /* ACTIVITY IS THE CONTEXT!!!!! */
  private CameraManager cameraManager;
  private CameraCharacteristics cameraCharacteristics;
  private JSONObject camerasIdsEtc = new JSONObject();
@@ -303,13 +303,13 @@ public class Cam2Plug extends CordovaPlugin {
      try{
        cameraCharacteristics = cameraManager.getCameraCharacteristics("0");
        if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
-         cameraIdsEtc.put("frontCameraId","0");
+         camerasIdsEtc.put("frontCameraId","0");
 
          tmpCamObj = new JSONObject();/*Fill it with stuff for one cam we are ding now:*/
 
          tmpAr = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);Arrays.sort(tmpAr);
-         if (Arrays.binarySearch(tmpAr, REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",false);}
-         if (Arrays.binarySearch(tmpAr, REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",false);}
+         if (Arrays.binarySearch(tmpAr, CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",false);}
+         if (Arrays.binarySearch(tmpAr, CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",false);}
 
          switch (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL))
          {
@@ -329,17 +329,17 @@ public class Cam2Plug extends CordovaPlugin {
           break;
          }
 
-         streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("frontCameraId"))] = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);//The active streamConfigurationMap object for one camera, stored in an array (of just two elements)
+         streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("frontCameraId"))] = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);//The active streamConfigurationMap object for one camera, stored in an array (of just two elements)
          /*Attempt to assess fastest FPS available here (must also do it via HighSpeedFPS methods etc - below*/
-         tmpAr = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("frontCameraId"))].getOutputFormats();
+         tmpAr = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("frontCameraId"))].getOutputFormats();
          Arrays.sort(tmpAr);
          if(Arrays.binarySearch(tmpAr, ImageFormat.YUV_420_888) != -1) {//If this format is supported
-           tmpSizesAr = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("frontCameraId"))].getOutputSizes(ImageFormat.YUV_420_888);
+           tmpSizesAr = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("frontCameraId"))].getOutputSizes(ImageFormat.YUV_420_888);
            tmpArr = new int[tmpSizesAr.length];
            for (int i=0;i<tmpSizesAr.length;i++) {tmpArr[i]=tmpSizesAr[i].getWidth()*tmpSizesAr[i].getHeight();}
            Arrays.sort(tmpArr);
            for (int i=0;i<tmpSizesAr.length;i++) {if (tmpArr[0]==tmpSizesAr[i].getWidth()*tmpSizesAr[i].getHeight()) {minSize = new Size(tmpSizesAr[i].getWidth(),tmpSizesAr[i].getHeight());break;}}
-           minFrameDur = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("frontCameraId"))].getOutputMinFrameDuration(ImageFormat.YUV_420_888, minSize);//0 if unsupported or Long(ns) Minimal frame duration (for the given format/Size and assumng all mode AF AWB etc are set to OFF)
+           minFrameDur = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("frontCameraId"))].getOutputMinFrameDuration(ImageFormat.YUV_420_888, minSize);//0 if unsupported or Long(ns) Minimal frame duration (for the given format/Size and assumng all mode AF AWB etc are set to OFF)
            if (minFrameDur != 0) {
              tmpFPSAttempt.put("minFrameDuration_ns",minFrameDur);
              tmpFPSAttempt.put("ImageFormat","ImageFormat.YUV_420_888");
@@ -347,18 +347,18 @@ public class Cam2Plug extends CordovaPlugin {
              tmpCamObj.put("highestFPSAssessment",tmpFPSAttempt.toString());
            }
          }
-         
+
            /*Size[] getHighSpeedVideoSizesFor (Range<Integer> fpsRange)*/
            /*Range[]<Integer> getHighSpeedVideoFpsRanges ()*/
 
-       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("frontCameraId"))].toString()));
-     
-       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_FRAME_DURATION", "null");}
+       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("frontCameraId"))].toString()));
 
-       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_MAX_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", "null");}
+/*       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_FRAME_DURATION", "null");}*/
+
+/*       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_MAX_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", "null");}*/
 
        tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES).length];
-       controlAEModes=JSONObject();
+       controlAEModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
@@ -375,50 +375,52 @@ public class Cam2Plug extends CordovaPlugin {
          case CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH:
           controlAEModes.put("ON_ALWAYS_FLASH",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTOFLASH_REDEYE:
-          controlAEModes.put("ON_AUTOFLASH_REDEYE",tmpAr[i]);
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH_REDEYE:
+          controlAEModes.put("ON_AUTO_FLASH_REDEYE",tmpAr[i]);
          break;
          default:
          break;
         }
        }
-       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_MODE))+"}"));
+/*       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_MODE))+"}"));*/
+       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+"...placeholder_for_CONTROL_AE_MODE..."+"}"));
 
        tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_MODES).length];
-       controlModes=JSONObject();
+       controlModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_MODE_OFF):
+         case CameraCharacteristics.CONTROL_MODE_OFF:
           controlModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_AUTO):
+         case CameraCharacteristics.CONTROL_MODE_AUTO:
           controlModes.put("AUTO",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE):
+         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE:
           controlModes.put("USE_SCENE_MODE",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE):
+         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE:
           controlModes.put("OFF_KEEP_STATE",tmpAr[i]);
          break;
          default:
          break;
         }
        }
-       tmpCamObj.put("CONTROL", JSONObject.quote("{\"CONTROL_AVAILABLE_MODES\":"+controlModes.toString()+",\"CONTROL_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_MODE))+"}"));
+/*       tmpCamObj.put("CONTROL", JSONObject.quote("{\"CONTROL_AVAILABLE_MODES\":"+controlModes.toString()+",\"CONTROL_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_MODE))+"}"));*/
+       tmpCamObj.put("CONTROL", JSONObject.quote("{\"CONTROL_AVAILABLE_MODES\":"+controlModes.toString()+",\"CONTROL_MODE\":"+"...placeholder_for_CONTROL_MODE..."+"}"));
 
-        cameraIdsEtc.put(cameraIdsEtc.get("frontCameraId"),tmpCamObj.toString());
+        camerasIdsEtc.put(camerasIdsEtc.get("frontCameraId"),tmpCamObj.toString());
        }
        cameraCharacteristics = cameraManager.getCameraCharacteristics("1");
        if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK)  {
-         cameraIdsEtc.put("backCameraId","1");
+         camerasIdsEtc.put("backCameraId","1");
 
          tmpCamObj = new JSONObject();/*Fill it with stuff for one cam we are ding now:*/
 
          tmpAr = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);Arrays.sort(tmpAr);
-         if (Arrays.binarySearch(tmpAr, REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",false);}
-         if (Arrays.binarySearch(tmpAr, REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",false);}
+         if (Arrays.binarySearch(tmpAr, CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",false);}
+         if (Arrays.binarySearch(tmpAr, CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)!=-1) {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",true);} else {tmpCamObj.put("REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO",false);}
 
          switch (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL))
          {
@@ -431,24 +433,24 @@ public class Cam2Plug extends CordovaPlugin {
           case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
             tmpCamObj.put("INFO_SUPPORTED_HARDWARE_LEVEL","FULL");
           break;
-          case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3::
+          case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3:
             tmpCamObj.put("INFO_SUPPORTED_HARDWARE_LEVEL","3");
           break;
           default:
           break;
          }
 
-         streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))] = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);//The active streamConfigurationMap object for one camera, stored in an array (of just two elements)
+         streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("backCameraId"))] = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);//The active streamConfigurationMap object for one camera, stored in an array (of just two elements)
          /*Attempt to assess fastest FPS available here (must also do it via HighSpeedFPS methods etc - below*/
-         tmpAr = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].getOutputFormats();
+         tmpAr = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("backCameraId"))].getOutputFormats();
          Arrays.sort(tmpAr);
          if(Arrays.binarySearch(tmpAr, ImageFormat.YUV_420_888) != -1) {//If this format is supported
-           tmpSizesAr = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].getOutputSizes(ImageFormat.YUV_420_888);
+           tmpSizesAr = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("backCameraId"))].getOutputSizes(ImageFormat.YUV_420_888);
            tmpArr = new int[tmpSizesAr.length];
            for (int i=0;i<tmpSizesAr.length;i++) {tmpArr[i]=tmpSizesAr[i].getWidth()*tmpSizesAr[i].getHeight();}
            Arrays.sort(tmpArr);
            for (int i=0;i<tmpSizesAr.length;i++) {if (tmpArr[0]==tmpSizesAr[i].getWidth()*tmpSizesAr[i].getHeight()) {minSize = new Size(tmpSizesAr[i].getWidth(),tmpSizesAr[i].getHeight());break;}}
-           minFrameDur = streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].getOutputMinFrameDuration(ImageFormat.YUV_420_888, minSize);//0 if unsupported or Long(ns) Minimal frame duration (for the given format/Size and assumng all mode AF AWB etc are set to OFF)
+           minFrameDur = streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("backCameraId"))].getOutputMinFrameDuration(ImageFormat.YUV_420_888, minSize);//0 if unsupported or Long(ns) Minimal frame duration (for the given format/Size and assumng all mode AF AWB etc are set to OFF)
            if (minFrameDur != 0) {
              tmpFPSAttempt.put("minFrameDuration_ns",minFrameDur);
              tmpFPSAttempt.put("ImageFormat","ImageFormat.YUV_420_888");
@@ -456,73 +458,74 @@ public class Cam2Plug extends CordovaPlugin {
              tmpCamObj.put("highestFPSAssessment",tmpFPSAttempt.toString());
            }
          }
-         
+
            /*Size[] getHighSpeedVideoSizesFor (Range<Integer> fpsRange)*/
            /*Range[]<Integer> getHighSpeedVideoFpsRanges ()*/
 
-       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(cameraIdsEtc.getInt("backCameraId"))].toString());
-     
-       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_FRAME_DURATION", "null");}
+       tmpCamObj.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMaps[Integer.parseUnsignedInt(camerasIdsEtc.getInt("backCameraId"))].toString()));
 
-       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_MAX_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", "null");}
+/*       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_FRAME_DURATION", "null");}*/
+
+/*       if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_MAX_FRAME_DURATION)!=null) {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", cameraCharacteristics.get(CameraCharacteristics.SENSOR_FRAME_DURATION));} else {tmpCamObj.put("SENSOR_INFO_MAX_FRAME_DURATION", "null");}*/
 
        tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES).length];
-       controlAEModes=JSONObject();
+       controlAEModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_AE_MODE_OFF):
+         case CameraCharacteristics.CONTROL_AE_MODE_OFF:
           controlAEModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON:
           controlAEModes.put("ON",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH:
           controlAEModes.put("ON_AUTO_FLASH",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH):
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_ALWAYS_FLASH:
           controlAEModes.put("ON_ALWAYS_FLASH",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTOFLASH_REDEYE):
-          controlAEModes.put("ON_AUTOFLASH_REDEYE",tmpAr[i]);
+         case CameraCharacteristics.CONTROL_AE_MODE_ON_AUTO_FLASH_REDEYE:
+          controlAEModes.put("ON_AUTO_FLASH_REDEYE",tmpAr[i]);
          break;
          default:
          break;
         }
        }
-       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_MODE))+"}"));
+/*       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_MODE))+"}"));*/
+       tmpCamObj.put("CONTROL_AE", JSONObject.quote("{\"CONTROL_AE_AVAILABLE_MODES\":"+controlAEModes.toString()+",\"CONTROL_AE_MODE\":"+"...placeholder_for_CONTROL_AE_MODE..."+"}"));
 
        tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_MODES).length];
-       controlModes=JSONObject();
+       controlModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
         {
-         case CameraCharacteristics.CONTROL_MODE_OFF):
+         case CameraCharacteristics.CONTROL_MODE_OFF:
           controlModes.put("OFF",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_AUTO):
+         case CameraCharacteristics.CONTROL_MODE_AUTO:
           controlModes.put("AUTO",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE):
+         case CameraCharacteristics.CONTROL_MODE_USE_SCENE_MODE:
           controlModes.put("USE_SCENE_MODE",tmpAr[i]);
          break;
-         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE):
+         case CameraCharacteristics.CONTROL_MODE_OFF_KEEP_STATE:
           controlModes.put("OFF_KEEP_STATE",tmpAr[i]);
          break;
          default:
          break;
         }
        }
-       tmpCamObj.put("CONTROL", JSONObject.quote("{\"CONTROL_AVAILABLE_MODES\":"+controlModes.toString()+",\"CONTROL_MODE\":"+String.valueOf(cameraCharacteristics.get(CameraCharacteristics.CONTROL_MODE))+"}"));
+       tmpCamObj.put("CONTROL", JSONObject.quote("{\"CONTROL_AVAILABLE_MODES\":"+controlModes.toString()+",\"CONTROL_MODE\":"+"...placeholder_for_CONTROL_MODE..."+"}"));
 
-        cameraIdsEtc.put(cameraIdsEtc.get("backCameraId"),tmpCamObj.toString());
+        camerasIdsEtc.put(camerasIdsEtc.get("backCameraId"),tmpCamObj.toString());
        }
-       notifyJs_String("errors","Found out about two cams here.<br>Front-facing one has id: \'"+String.valueOf(optString("frontCameraId","null"))+"\', and<br>Back-facing one has id: \'"+String.valueOf(optString("backCameraId","null"))+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br><hr>");
-       notifyJs_JSONObject("errors",cameraIdsEtc);
+       notifyJs_String("errors","Found out about two cams here.<br>Front-facing one has id: \'"+String.valueOf(camerasIdsEtc.optString("frontCameraId","null"))+"\', and<br>Back-facing one has id: \'"+String.valueOf(camerasIdsEtc.optString("backCameraId","null"))+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br><hr>");
+       notifyJs_JSONObject("errors",camerasIdsEtc);
 /*Statistics etc can (and should) be easily cut out from here later on.*/
-       cameraId = cameraIdsEtc.get("frontCameraId");/*Pick one camera to make it easier for now*/
+       cameraId = camerasIdsEtc.get("frontCameraId");/*Pick one camera to make it easier for now*/
 /*
 
        public class MyCameraDeviceStateCallback extends CameraDevice.StateCallback {
@@ -635,8 +638,8 @@ public class Cam2Plug extends CordovaPlugin {
      catch(SecurityException e)        {throw new RuntimeException(e);}
      catch(IllegalStateException e)    {throw new RuntimeException(e);}
    }
-   catch (Exception e)        { notifyJs_String("errors","Caught Exception at setupCam()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>"); }
-   catch (RuntimeException e) { notifyJs_String("errors","Caught RuntimeException at setupCam()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>"); }
+   catch (RuntimeException e)  { Cam2Plug.this.notifyJs_String("errors","Caught RuntimeException at setupCam()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>"); }
+   catch (Exception e)         { Cam2Plug.this.notifyJs_String("errors","Caught Exception at setupCam()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>"); }
  }
 
 /*====================================================================================================================================================================*/
