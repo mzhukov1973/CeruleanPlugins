@@ -60,7 +60,7 @@
 - [ ] Create and implement minimal mandatory message format - timestamps, etc.
 ###### 0.0.3
 
-## Miscellaneous
+# Miscellaneous
 
 ### Creating Java&#x279C;js communication channel:
 #### The method that is actually implemented now (later explore the advantages of moving all comms to a unified, dedicated bridge):
