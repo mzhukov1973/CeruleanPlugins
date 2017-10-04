@@ -9,46 +9,61 @@
 - [x] ~~Until the deferred part of the initialisation is complete, app should function normally, except for the specific functions that require CAMERA access.~~
 - [x] ~~When attempting to make use of these CAMERA-related functions before the app is fully initialised, it should fail gracefully, informing the user about the necessity of granting it CAMERA permissions in order for these functions to become available.~~
 - [x] ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
-- [x] ~~*(phase<sup>1</sup>: when there're no actual hardware resources invloved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and reacquisitioning hardware resources.~~
+- [x] ~~*(phase<sup>1</sup>: when there're no actual hardware resources involved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and re-acquisitioning hardware resources.~~
 - [x] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
 - [x] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
-- [x] ~~Ignore anything related to old CAMERA api, got exclusively for CAMERA2.~~
+- [x] ~~Ignore anything related to old CAMERA API, got exclusively for CAMERA2.~~
 - [x] ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
 ##### 0.0.2
-- [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and reacquisitioning hardware resources.
+- [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
 - [ ] Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
 - [ ] Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
 - [ ] Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
-- [ ] **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/syntetic **js** events).
-- [ ] In case of comms chanell unavailability when attempting to send a message from Java to js messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consequitevely, once channel gets re-established.
-- [ ] Create and implement minimal mandatory message fomat - timestamps, etc.
+- [ ] **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
+- [ ] In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
+- [ ] Get to the Camera:
+   - [ ] Identify all available cameras, choose the two we need, i.e. front and back cameras.
+   - [ ] Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
+      - [ ] Minimal resolution available when using the format, that is most easy overhead-wise.
+      - [ ] Maximum expected sustained FPS at that resolution.
+         - [ ] Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+      - [ ] Ability to switch off unneeded complications, most importantly:
+         - [ ] Auto-focus
+         - [ ] Automatic exposure
+      - [ ] Presence of high-speed burst video capture capability. And more specifically:
+         - [ ] Formats and frame dimensions, supported in high-speed capture mode.
+         - [ ] The smallest available resolution for this mode, coupled with the appropriate image format.
+         - [ ] The best FPS we can reliably expect under these circumstances.
+            - [ ] Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+         - [ ] Maximum high-speed capture burst duration we can attain on this device in practical terms.
+   - [ ] Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.
+   - [ ] Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
+   - [ ] Arrange reporting this info to **js** side both on demand and on change. 
+      - [ ] At first just dumping it all is enough.
+      - [ ] Next step would be to implement an ability to poll just a subset of this data.
+      - [ ] With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
+      - [ ] The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
+   - [ ] Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).
+   - [ ] Implement (switchable on and off) video stream output to a visible surface.
+   - [ ] Implement video output to an Allocation surface, remaining completely in the background.
+   - [ ] At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
+- [ ] Implement the basic semantic blocks of the **Pub** app:
+   - [ ] Always-on (when switched on) Observer, that lives 100% in the background.
+   - [ ] Eye-centred UI with minimal controls and detailed display of what's going on with Observer thread.
+   - [ ] Traditional notification system (to get users' attention when a suitable message or SMS arrives).
+   - [ ] Minimal unprotected local storage system for untransmitted message queues and general state of the app (ideally it should be sudden reboot proof too).
+   - [ ] Final version of the QR component.
+   - [ ] Basic message-processing mechanics (transmission/interception of messages, chunks, handing chunks over (and receiving them from) the **Priv** app, etc).
+   - [ ] Minimal flash-based command logic.
+   - [ ] At a later date explore the option of **Priv**&#x279E;**Pub** data transmission via high-speed burst captures/analysis.
+   - [ ] Minimal **Priv** app authentication, to at least attempt to get in the way of foreign **Priv** app trying to spoil things. 
+- [ ] Create and implement minimal mandatory message format - timestamps, etc.
 ###### 0.0.3
 
 ## Miscellaneous
 
-### Creating Java&#x2794;js communication channel:
-#### ~~The simplest, shortest method with practicaly no set-up required:~~
-<sup>~~**N.B.!**~~</sup>~~*Works only from `CordovaActivity` and seems to be generally frowned upon for some reason.*~~
-
->~~` 
->this.appView.loadUrl("javascript:yourmethodname());");
->/*Where yourmethodname() is the js function you want to call in webView.*/
->`~~
-
-~~So, to be called from `CordovaPlugin` it has to look like this:~~
-
->~~`
->this.cordova.getActivity().appView.loadUrl("javascript:yourmethodname());");
->`~~
-
-~~Interesting... Why go through `CordovaActivity` and not directly through `CordovaWebView`, since we already have it locally in `CordovaPlugin`?..~~
-
-~~E.g. something along these lines:~~
-
->~~`
->   webView.loadUrlIntoView("javascript:yourmethodname());",true);
->`~~
-#### Another method (works anywhere in your Java code though requires a tad more work to set up and use):
+### Creating Java&#x279C;js communication channel:
+#### The method that is actually implemented now (later explore the advantages of moving all comms to a unified, dedicated bridge):
 1. Create a private `CallbackContext` in your `CordovaPlugin.`
 >   ```java
 >      private CallbackContext callbackContext;
@@ -71,34 +86,9 @@
 >      pluginResult.setKeepCallback(true);
 >      callbackContext.sendPluginResult(pluginResult);
 >   ```
-#### ~~Seemingly the definitive way (from a comment in `CordovaWebView.java`):~~
-~~Instead of executing snippets of **js**, you should use the exec bridge to create a **Java**&#x2794;**js** communication channel.~~
 
-##### ~~To do this:~~
-###### ~~1. Within `plugin.xml` (to have your js run before `deviceready`):~~
->   ~~`
->      <js-module>
->        <runs/>
->      </js-module>
->   `~~
-###### ~~2. Within your **`.js`** (call `exec()` on start-up):~~
->   ~~`
->      require('cordova/channel').onCordovaReady.subscribe(function() {
->        require('cordova/exec')(win, null, 'Plugin', 'method', []);
->        function win(message) {
->          ... process message from Java here ...
->        }
->      });
->   `~~
-###### ~~3. Within your **`.java`**:~~
->   ~~`
->      PluginResult dataResult = new PluginResult(PluginResult.Status.OK, CODE);
->      dataResult.setKeepCallback(true);
->      savedCallbackContext.sendPluginResult(dataResult);
->   `~~
-
-### Java&#x2794;js data exchange format
-What gets sent from **Java** side of things is an [org.json.JSONObject](https://developer.android.com/reference/org/json/JSONObject.html). It gets analysed on **js** side and those of its set properties, that are recoginsed, get acted upon. No configuration of its contents should bring about catastrophic events - it's foolproofed contents-wise from the **js** side: anything that is not understood or doesn't strictly conform to the format (e.g. string as a value for a boolean property:
+### Java&#x279C;js data exchange format
+What gets sent from **Java** side of things is an [org.json.JSONObject](https://developer.android.com/reference/org/json/JSONObject.html). It gets analysed on **js** side and those of its set properties, that are recognised, get acted upon. No configuration of its contents should bring about catastrophic events - it's fool-proofed contents-wise from the **js** side: anything that is not understood or doesn't strictly conform to the format (e.g. string as a value for a boolean property:
 
 >`{ ... "boolean_prop":`~~`"true"`~~`, ... }`
 
@@ -108,9 +98,9 @@ instead of:
 >{ ... "boolean_prop":true, ... }
 >```
 
-with an actual boolean value) gets silently ignored, save for diagnostics, dropped to `console.log()` and/or **Java**&#x2794;**js** comms status box if it is present.
+with an actual boolean value) gets silently ignored, save for diagnostics, dropped to `console.log()` and/or **Java**&#x279C;**js** comms status box if it is present.
 
-Here is the most complete form of the the JSON data object possible as it looks on the **Java** side, listing all the properties, recognized by the **js** side of things. 
+Here is the most complete form of the the JSON data object possible as it looks on the **Java** side, listing all the properties, recognised by the **js** side of things. 
 
 Should be kept up-to-date.
 >```java
@@ -133,3 +123,29 @@ Should be kept up-to-date.
 >- "TrackingSource"
 >- "AttemptingToIdSource"
 >- "RecoginsedSource"
+
+### Java&#x279C;js data exchange functions:
+##### (As implemented now - the proto comms-API it is to become later, aggregated into one or two Java/js objects, providing data flow control and message queues management)
+
+###### Prototypes:
+
+```java
+private void notifyJs_bool(String propName,boolean propValue);
+private void notifyJs_String(String propName,String propValue);
+private void notifyJs_JSONObject(String propName, JSONObject propValue);
+```
+
+###### The way they are actually used (with actual parameters - the list is supposed to be exhaustive):
+
+```java
+      notifyJs_bool("initState", isFullyInitialised );
+      notifyJs_bool("camAccess", hasCameraPermission);
+notifyJs_JSONObject("camState",  cameraState        );
+notifyJs_JSONObject("errors",    JSONObject <any>   );
+```
+
+
+[comment]: # (N.B.! For this comment format to work a blank empty line before AND after it is a must! Also, one mustn't use newlines and parentheses. <I decided to use these triangular HTML/XML tag parentheses instead.>)
+
+[comment]: # (Some Unicode symbols: a bold <not used> left-to-right arrow:&#x2794; another <used> bold left-to-right arrow:&#x279C; a non-bold <used> left-to-right arrow:&#x279E; another non-bold <not used> left-to-right arrow:&#x279D; a very nice non-bold right arrow:&#x2192; a slightly 3D empty checkbox<GOOD>:&#x274F; beautiful check-marks, bold<GOOD, MAY BE USED BETWEEN SQUARE BRACKETS>:&#x2714; and not bold<WORSE>:&#x2713; beautiful checkbox crosses, bold<GOOD, MAY BE USED BETWEEN SQUARE BRACKETS>:&#x2718; and not bold<WORSE>:&#x2717; a warning sign:&#x26A0; a framed key:&#x26BF; a high voltage sign:&#x26A1; a Russian-style number sign:&#x2116; an information sign:&#x2139; a skull and crossbones:&#x2620; a radioactive sign:&#x2622; a bio-hazard sign:&#x2623; a hammer and sickle:&#x262D; a trademark sign:&#x2122; a 'Reserved' symbol:&#x00AE; a copyright symbol:&#x00A9; a footnote bookmark <dagger - cross-like>:&#x2020; 
+a footnote bookmark <double dagger - cross-like>:&#x2021; a small footnote-mark style black star:&#x22C6; an 'exists' symbol:&#x2203; a 'does not exist' symbol:&#x2204; a 'for any' symbol:&#x22C1; a 'for all' symbol:&#x2200; a capital lambda:&#x039B; a large plus symbol:&#x2795; a large minus symbol:&#x2796; a 'minus-plus' symbol:&#x2213; a 'plus-minus' symbol:&#x00B1; an 'of the same order of magnitude' sign:&#x223D;)

@@ -58,6 +58,8 @@
   </config-file>
 
   <source-file src="src/android/Cam2Plug.java" target-dir="src/cw/plugins/cam2plug" />
+
+  <source-file src="build-extras.gradle" target-dir="." />
  </platform>
 
 </plugin>

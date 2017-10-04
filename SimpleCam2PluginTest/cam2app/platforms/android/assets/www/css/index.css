@@ -162,3 +162,26 @@ div
 .black {color:rgba(   0,   0,   0, 1);}
 .red   {color:rgba( 190,   0,   0, 1);}
 .green {color:rgba(   0, 190,   0, 1);}
+
+.bigScreen
+{
+ min-width:160px;width:160px;
+ min_height:120px;height:120px;
+ border:2px solid black;
+ box-shadow: 4px 4px 4px 0 rgba(0,0,0,1);
+ margin:10px;padding:0;
+ background-color:rgba(0,255,0,0.2);
+}
+
+.megaStatus
+{
+ min-width:90%;
+ width:90%;
+ min_height:4rem;
+ border:1px solid black;
+ border-radius:5px
+ margin:5px;margin-top:10px;padding:5px;
+ background-color:rgba(0,0,255,0.2);
+ font-size:0.8rem;
+ line-height:1rem;
+}
