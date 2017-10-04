@@ -3,25 +3,25 @@
 
 ## ToDo:
 ##### 0.0.0
-[&#x2714;] ~~Two clean apps - an app and a plugin that is, that build nicely together with no warnings and all according to best practices, as far as they can be fathomed in this case.~~
+**[**&#x2714;**]** ~~Two clean apps - an app and a plugin that is, that build nicely together with no warnings and all according to best practices, as far as they can be fathomed in this case.~~
 ##### 0.0.1
-[&#x2714;] ~~Apps' initialisation should be two-staged - the second one deferred until CAMERA access permission is obtained.~~
+**[**&#x2714;**]** ~~Apps' initialisation should be two-staged - the second one deferred until CAMERA access permission is obtained.~~
 
-[&#x2714;] ~~Until the deferred part of the initialisation is complete, app should function normally, except for the specific functions that require CAMERA access.~~
+**[**&#x2714;**]** ~~Until the deferred part of the initialisation is complete, app should function normally, except for the specific functions that require CAMERA access.~~
 
-[&#x2714;] ~~When attempting to make use of these CAMERA-related functions before the app is fully initialised, it should fail gracefully, informing the user about the necessity of granting it CAMERA permissions in order for these functions to become available.~~
+**[**&#x2714;**]** ~~When attempting to make use of these CAMERA-related functions before the app is fully initialised, it should fail gracefully, informing the user about the necessity of granting it CAMERA permissions in order for these functions to become available.~~
 
-[&#x2714;] ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
+**[**&#x2714;**]** ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
 
-[&#x2714;] ~~*(phase<sup>1</sup>: when there're no actual hardware resources involved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and re-acquisitioning hardware resources.~~
+**[**&#x2714;**]** ~~*(phase<sup>1</sup>: when there're no actual hardware resources involved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and re-acquisitioning hardware resources.~~
 
-[&#x2714;] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
+**[**&#x2714;**]** ~~Expose to **js** a method to query the initialisation state of the plugin.~~
 
-[&#x2714;] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
+**[**&#x2714;**]** ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
 
-[&#x2714;] ~~Ignore anything related to old CAMERA API, got exclusively for CAMERA2.~~
+**[**&#x2714;**]** ~~Ignore anything related to old CAMERA API, got exclusively for CAMERA2.~~
 
-[&#x2714;] ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
+**[**&#x2714;**]** ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
 ##### 0.0.2
 **[&#xA0;&#xA0;]** *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
 
@@ -35,23 +35,23 @@
 
 **[&#xA0;&#xA0;]** In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
 
-[&#x00B1;] Get to the Camera:
+**[**&#x00B1;**]** Get to the Camera:
 
-&#xA0;&#xA0;&#xA0; [&#x2714;] ~~Identify all available cameras, choose the two we need, i.e. front and back cameras.~~
+&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Identify all available cameras, choose the two we need, i.e. front and back cameras.~~
 
-&#xA0;&#xA0;&#xA0; [&#x00B1;] Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
+&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;[&#x2714;] ~~Minimal resolution available when using the format, that is most easy overhead-wise.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Minimal resolution available when using the format, that is most easy overhead-wise.~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum expected sustained FPS at that resolution.
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;[&#x00B1;] Ability to switch off unneeded complications, most importantly:
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Ability to switch off unneeded complications, most importantly:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;[&#x2714;] ~~Auto-focus~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Auto-focus~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;[&#x2714;] ~~Automatic exposure~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Automatic exposure~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Presence of high-speed burst video capture capability. And more specifically:
 
@@ -65,13 +65,13 @@
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum high-speed capture burst duration we can attain on this device in practical terms.
 
-&#xA0;&#xA0;&#xA0; [&#x2714;] ~~Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.~~
+&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.~~
 
 &#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
 
-&#xA0;&#xA0;&#xA0; [&#x00B1;] Arrange reporting this info to **js** side both on demand and on change. 
+&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Arrange reporting this info to **js** side both on demand and on change. 
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;[&#x2714;] ~~At first just dumping it all is enough.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~At first just dumping it all is enough.~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Next step would be to implement an ability to poll just a subset of this data.
 
@@ -79,7 +79,7 @@
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
 
-&#xA0;&#xA0;&#xA0; [&#x2714;] ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
+&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
 
 &#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Implement (switchable on and off) video stream output to a visible surface.
 
