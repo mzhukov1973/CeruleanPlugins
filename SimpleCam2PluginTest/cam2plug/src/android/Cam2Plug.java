@@ -178,10 +178,10 @@ public class Cam2Plug extends CordovaPlugin {
 /* private void notifyJs_String(String propName,String propValue);          */
 /* private void notifyJs_JSONObject(String propName, JSONObject propValue); */
 /*--------------------------------------------------------------------------*/
-/*       notifyJs_bool("initState", isFullyInitialised );                   */
-/*       notifyJs_bool("camAccess", hasCameraPermission);                   */
-/* notifyJs_JSONObject("camState",  cameraState        );                   */
-/* notifyJs_JSONObject("errors",    JSONObject <any>   );                   */
+/*       notifyJs_bool("initState", isFullyInitialised     );               */
+/*       notifyJs_bool("camAccess", hasCameraPermission    );               */
+/* notifyJs_JSONObject("camState",  cameraState            );               */
+/* notifyJs_JSONObject("errors",    JSONObject cameraIdsEtc);               */
 /*--------------------------------------------------------------------------*/
 
  private void notifyJs_bool(String propName,boolean propValue) {

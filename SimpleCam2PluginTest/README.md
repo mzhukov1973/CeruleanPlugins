@@ -188,10 +188,10 @@ private void notifyJs_JSONObject(String propName, JSONObject propValue);
 ###### The way they are actually used (with actual parameters - the list is supposed to be exhaustive):
 
 ```java
-      notifyJs_bool("initState", isFullyInitialised );
-      notifyJs_bool("camAccess", hasCameraPermission);
-notifyJs_JSONObject("camState",  cameraState        );
-notifyJs_JSONObject("errors",    JSONObject <any>   );
+      notifyJs_bool("initState", isFullyInitialised     );
+      notifyJs_bool("camAccess", hasCameraPermission    );
+notifyJs_JSONObject("camState",  cameraState            );
+notifyJs_JSONObject("errors",    JSONObject cameraIdsEtc);
 ```
 
 
