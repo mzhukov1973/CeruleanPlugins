@@ -3,61 +3,61 @@
 
 ## ToDo:
 ##### 0.0.0
-- [x] ~~Two clean apps - an app and a plugin that is, that build nicely together with no warnings and all according to best practices, as far as they can be fathomed in this case.~~
+- [&#x2714;] ~~Two clean apps - an app and a plugin that is, that build nicely together with no warnings and all according to best practices, as far as they can be fathomed in this case.~~
 ##### 0.0.1
-- [x] ~~Apps' initialisation should be two-staged - the second one deferred until CAMERA access permission is obtained.~~
-- [x] ~~Until the deferred part of the initialisation is complete, app should function normally, except for the specific functions that require CAMERA access.~~
-- [x] ~~When attempting to make use of these CAMERA-related functions before the app is fully initialised, it should fail gracefully, informing the user about the necessity of granting it CAMERA permissions in order for these functions to become available.~~
-- [x] ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
-- [x] ~~*(phase<sup>1</sup>: when there're no actual hardware resources involved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and re-acquisitioning hardware resources.~~
-- [x] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
-- [x] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
-- [x] ~~Ignore anything related to old CAMERA API, got exclusively for CAMERA2.~~
-- [x] ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
+- [&#x2714;] ~~Apps' initialisation should be two-staged - the second one deferred until CAMERA access permission is obtained.~~
+- [&#x2714;] ~~Until the deferred part of the initialisation is complete, app should function normally, except for the specific functions that require CAMERA access.~~
+- [&#x2714;] ~~When attempting to make use of these CAMERA-related functions before the app is fully initialised, it should fail gracefully, informing the user about the necessity of granting it CAMERA permissions in order for these functions to become available.~~
+- [&#x2714;] ~~Do not just poll for the change in permissions - react to it as it happens, running the deferred part of the initialisation at once.~~
+- [&#x2714;] ~~*(phase<sup>1</sup>: when there're no actual hardware resources involved yet)* Implement proper reaction to Pause,Resume,Start,Stop,Message and Destroy events - especially concerning relinquishing and re-acquisitioning hardware resources.~~
+- [&#x2714;] ~~Expose to **js** a method to query the initialisation state of the plugin.~~
+- [&#x2714;] ~~Arrange for the **js** part of the app to be able to just listen on an event (as is with the `deviceready` one) to be notified of changes to plugins' initialisation state.~~
+- [&#x2714;] ~~Ignore anything related to old CAMERA API, got exclusively for CAMERA2.~~
+- [&#x2714;] ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
 ##### 0.0.2
-- [ ] *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
-- [ ] Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
-- [ ] Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
-- [ ] Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
-- [ ] **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
-- [ ] In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
-- [ ] Get to the Camera:
-   - [ ] Identify all available cameras, choose the two we need, i.e. front and back cameras.
-   - [ ] Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
-      - [ ] Minimal resolution available when using the format, that is most easy overhead-wise.
-      - [ ] Maximum expected sustained FPS at that resolution.
-         - [ ] Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
-      - [ ] Ability to switch off unneeded complications, most importantly:
-         - [ ] Auto-focus
-         - [ ] Automatic exposure
-      - [ ] Presence of high-speed burst video capture capability. And more specifically:
-         - [ ] Formats and frame dimensions, supported in high-speed capture mode.
-         - [ ] The smallest available resolution for this mode, coupled with the appropriate image format.
-         - [ ] The best FPS we can reliably expect under these circumstances.
-            - [ ] Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
-         - [ ] Maximum high-speed capture burst duration we can attain on this device in practical terms.
-   - [ ] Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.
-   - [ ] Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
-   - [ ] Arrange reporting this info to **js** side both on demand and on change. 
-      - [ ] At first just dumping it all is enough.
-      - [ ] Next step would be to implement an ability to poll just a subset of this data.
-      - [ ] With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
-      - [ ] The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
-   - [ ] Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).
-   - [ ] Implement (switchable on and off) video stream output to a visible surface.
-   - [ ] Implement video output to an Allocation surface, remaining completely in the background.
-   - [ ] At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
-- [ ] Implement the basic semantic blocks of the **Pub** app:
-   - [ ] Always-on (when switched on) Observer, that lives 100% in the background.
-   - [ ] Eye-centred UI with minimal controls and detailed display of what's going on with Observer thread.
-   - [ ] Traditional notification system (to get users' attention when a suitable message or SMS arrives).
-   - [ ] Minimal unprotected local storage system for untransmitted message queues and general state of the app (ideally it should be sudden reboot proof too).
-   - [ ] Final version of the QR component.
-   - [ ] Basic message-processing mechanics (transmission/interception of messages, chunks, handing chunks over (and receiving them from) the **Priv** app, etc).
-   - [ ] Minimal flash-based command logic.
-   - [ ] At a later date explore the option of **Priv**&#x279E;**Pub** data transmission via high-speed burst captures/analysis.
-   - [ ] Minimal **Priv** app authentication, to at least attempt to get in the way of foreign **Priv** app trying to spoil things. 
-- [ ] Create and implement minimal mandatory message format - timestamps, etc.
+- &#x274F; *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
+- &#x274F; Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
+- &#x274F; Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
+- &#x274F; Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
+- &#x274F; **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
+- &#x274F; In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
+- [&#x00B1;] Get to the Camera:
+   - [&#x2714;] Identify all available cameras, choose the two we need, i.e. front and back cameras.
+   - [&#x00B1;] Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
+      - [&#x2714;] Minimal resolution available when using the format, that is most easy overhead-wise.
+      - &#x274F; Maximum expected sustained FPS at that resolution.
+         - &#x274F; Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+      - [&#x00B1;] Ability to switch off unneeded complications, most importantly:
+         - [&#x2714;] Auto-focus
+         - [&#x2714;] Automatic exposure
+      - &#x274F; Presence of high-speed burst video capture capability. And more specifically:
+         - &#x274F; Formats and frame dimensions, supported in high-speed capture mode.
+         - &#x274F; The smallest available resolution for this mode, coupled with the appropriate image format.
+         - &#x274F; The best FPS we can reliably expect under these circumstances.
+            - &#x274F; Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+         - &#x274F; Maximum high-speed capture burst duration we can attain on this device in practical terms.
+   - [&#x2714;] Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.
+   - &#x274F; Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
+   - [&#x00B1;] Arrange reporting this info to **js** side both on demand and on change. 
+      - [&#x2714;] At first just dumping it all is enough.
+      - &#x274F; Next step would be to implement an ability to poll just a subset of this data.
+      - &#x274F; With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
+      - &#x274F; The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
+   - [&#x2714;] Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).
+   - &#x274F; Implement (switchable on and off) video stream output to a visible surface.
+   - &#x274F; Implement video output to an Allocation surface, remaining completely in the background.
+   - &#x274F; At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
+- &#x274F; Implement the basic semantic blocks of the **Pub** app:
+   - &#x274F; Always-on (when switched on) Observer, that lives 100% in the background.
+   - &#x274F; Eye-centred UI with minimal controls and detailed display of what's going on with Observer thread.
+   - &#x274F; Traditional notification system (to get users' attention when a suitable message or SMS arrives).
+   - &#x274F; Minimal unprotected local storage system for untransmitted message queues and general state of the app (ideally it should be sudden reboot proof too).
+   - &#x274F; Final version of the QR component.
+   - &#x274F; Basic message-processing mechanics (transmission/interception of messages, chunks, handing chunks over (and receiving them from) the **Priv** app, etc).
+   - &#x274F; Minimal flash-based command logic.
+   - &#x274F; At a later date explore the option of **Priv**&#x279E;**Pub** data transmission via high-speed burst captures/analysis.
+   - &#x274F; Minimal **Priv** app authentication, to at least attempt to get in the way of foreign **Priv** app trying to spoil things. 
+- &#x274F; Create and implement minimal mandatory message format - timestamps, etc.
 ###### 0.0.3
 
 # Miscellaneous
