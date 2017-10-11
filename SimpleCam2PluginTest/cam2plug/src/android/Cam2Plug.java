@@ -41,6 +41,7 @@ import android.widget.Toast;
 //import android.os.Handler;
 //import android.os.HandlerThread;
 //import android.os.Looper;
+import android.os.SystemClock;
 
 import android.hardware.camera2.CameraAccessException;
 //import android.hardware.camera2.CameraCaptureSession;
@@ -174,64 +175,88 @@ public class Cam2Plug extends CordovaPlugin {
  }
 
 /*ToDo: A queueing system (see README.md). Implement as a separate class with a really simple public interface.*/
-/*-------------------------------------------------------------------------------------------------------------*/
-/* private void notifyJs_bool(String propName,boolean propValue);           */
-/* private void notifyJs_String(String propName,String propValue);          */
-/* private void notifyJs_JSONObject(String propName, JSONObject propValue); */
-/*--------------------------------------------------------------------------*/
-/*       notifyJs_bool("initState", isFullyInitialised     );               */
-/*       notifyJs_bool("camAccess", hasCameraPermission    );               */
-/* notifyJs_JSONObject("camState",  cameraState            );               */
-/* notifyJs_JSONObject("errors",    JSONObject camerasIdsEtc);              */
-/*--------------------------------------------------------------------------*/
-
- private void notifyJs_bool(String propName,boolean propValue) {
-   String lTG = "[notifyJs_bool_"+propName+"] ";
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* private void notifyJs_bool(       String propName, boolean propValue,    JSONObject... flagsObjectsArray );                                                                           */
+/* private void notifyJs_String(     String propName, String propValue,     JSONObject... flagsObjectsArray );                                                                           */
+/* private void notifyJs_JSONObject( String propName, JSONObject propValue, JSONObject... flagsObjectsArray );                                                                           */
+/*                                                                                                                                                                                       */
+/* flagsObjectsArray - an optional parameter, a nullable array of JSONObjects.                                                                                                           */
+/* flagsObjectsArray[0] is a caller-id flag,  it is a JSONObject and looks like this: {"provideCallerId":boolean} (if ommited, defaults to true).                                        */
+/* flagsObjectsArray[1] is a timestamp (ns),  it is a JSONObject and looks like this: {"timeStamp":long}          (if ommited or zero, defaults to the current .elapsedRealtimeNanos()). */
+/* flagsObjectsArray[2] is a combinable flag, it is a JSONObject and looks like this: {"isCombinable":boolean}    (if ommited, defaults to false).                                       */
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*       notifyJs_bool("initState", isFullyInitialised     );                                                                                                                            */
+/*       notifyJs_bool("camAccess", hasCameraPermission    );                                                                                                                            */
+/* notifyJs_JSONObject("camState",  cameraState            );                                                                                                                            */
+/* notifyJs_JSONObject("errors",    JSONObject camerasIdsEtc);                                                                                                                           */
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*~~~notifyJs_xxx(...) functions:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ private void notifyJs_bool(String propName,boolean propValue, JSONObject... flagsObjectsArray) {
+   String lTG = "[notifyJs_bool_"+propName+"] ", caller;
+   StackTraceElement[] stackTraceElements;
+   boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
+   long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
+   boolean isCombinable = false; if (flagsObjectsArray.length >= 3) {isCombinable = flagsObjectsArray[2].optBoolean("isCombinable",false);  } else { isCombinable = false; }                                                                     /*if ommited, <isCombinable> flag defaults to false*/
    JSONObject tmpObj = new JSONObject();
-   StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-   String caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
-   LOG.w(gTG, lTG+"Caller: "+caller);
+   if (doCallerId) {
+     stackTraceElements = Thread.currentThread().getStackTrace();}
+     caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
+     LOG.w(gTG, lTG+"Caller: "+caller);
+   }
    if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
    else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
    else {
      LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
-      try { tmpObj.put(propName,String.valueOf(propValue)); tmpObj.put("caller",JSONObject.quote(caller)); } catch (JSONException e) { throw new RuntimeException(e); }
+      try { tmpObj.put(propName,String.valueOf(propValue)); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
       sendToJs(tmpObj); 
      LOG.d(gTG, lTG+"Notification sent....");
    }
  }
 
- private void notifyJs_String(String propName,String propValue) {
-   String lTG = "[notifyJs_String_"+propName+"] ";
+ private void notifyJs_String(String propName,String propValue,JSONObject... flagsObjectsArray) {
+   String lTG = "[notifyJs_String_"+propName+"] ", caller;
+   StackTraceElement[] stackTraceElements;
+   boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
+   long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
+   boolean isCombinable = false; if (flagsObjectsArray.length >= 3) {isCombinable = flagsObjectsArray[2].optBoolean("isCombinable",false);  } else { isCombinable = false; }                                                                     /*if ommited, <isCombinable> flag defaults to false*/
    JSONObject tmpObj = new JSONObject();
-   StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-   String caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
-   LOG.w(gTG, lTG+"Caller: "+caller);
+   if (doCallerId) {
+     stackTraceElements = Thread.currentThread().getStackTrace();
+     caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
+     LOG.w(gTG, lTG+"Caller: "+caller);
+   }
    if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
    else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
    else {
      LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
-      try { tmpObj.put(propName, JSONObject.quote(propValue)); tmpObj.put("caller",JSONObject.quote(caller)); } catch (JSONException e) { throw new RuntimeException(e); }
+      try { tmpObj.put(propName, JSONObject.quote(propValue)); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
       sendToJs(tmpObj); 
      LOG.d(gTG, lTG+"Notification sent....");
    }
  }
 
- private void notifyJs_JSONObject(String propName, JSONObject propValue) {
-   String lTG = "[notifyJs_JSONObject_"+propName+"] ";
+ private void notifyJs_JSONObject(String propName, JSONObject propValue, JSONObject... flagsObjectsArray) {
+   String lTG = "[notifyJs_JSONObject_"+propName+"] ", caller;
+   StackTraceElement[] stackTraceElements;
+   boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
+   long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
+   boolean isCombinable = false; if (flagsObjectsArray.length >= 3) {isCombinable = flagsObjectsArray[2].optBoolean("isCombinable",false);  } else { isCombinable = false; }                                                                     /*if ommited, <isCombinable> flag defaults to false*/
    JSONObject tmpObj = new JSONObject();
-   StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-   String caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
-   LOG.w(gTG, lTG+"Caller: "+caller);
+   if (doCallerId) {
+     stackTraceElements = Thread.currentThread().getStackTrace();
+     caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
+     LOG.w(gTG, lTG+"Caller: "+caller);
+   }
    if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
    else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
    else {
      LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
-      try { tmpObj.put(propName,propValue); tmpObj.put("caller",JSONObject.quote(caller)); } catch (JSONException e) { throw new RuntimeException(e); }
+      try { tmpObj.put(propName,propValue); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
       sendToJs(tmpObj); 
      LOG.d(gTG, lTG+"Notification sent....");
    }
  }
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
  private void sTst(final String s){
   cordova.getActivity().runOnUiThread(new Runnable(){public void run(){Toast toast=Toast.makeText(cordova.getActivity().getApplicationContext(),s,Toast.LENGTH_LONG);toast.show();}});
@@ -322,6 +347,7 @@ public class Cam2Plug extends CordovaPlugin {
    JSONObject controlAEModes, controlModes, tmpFPSAttempt = new JSONObject(), formatsSizes, sizes, effectsAvailable;
    try {
      try {
+       camDataContainer.put("camId",camId);
        /***Get several specific capabilities:**************************************************************************************************/
        tmpAr = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES); Arrays.sort(tmpAr);
        if ( Arrays.binarySearch(tmpAr,CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE)                != -1 ) {camDataContainer.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",true);} else {camDataContainer.put("REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE",false);}
@@ -462,8 +488,9 @@ public class Cam2Plug extends CordovaPlugin {
          setupOneCam(camIdList[1], frontCam, frontCamStreamConfigurationMap, frontCameraCharacteristics);
        }
 
-       notifyJs_String("errors","Found out about two cams here.<br>Front-facing one has id: \'"+String.valueOf(camerasIdsEtc.optString("frontCameraId","null"))+"\', and<br>Back-facing one has id: \'"+String.valueOf(camerasIdsEtc.optString("backCameraId","null"))+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br><hr>");
-       notifyJs_JSONObject("errors",camerasIdsEtc);
+       notifyJs_String("errors","Found out about two cams here.<br>Front-facing one has id: \'"+frontCam.optString("camId","unknown")+"\', and<br>Back-facing one has id: \'"+backCam.optString("camId","unknown")+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br><hr>");
+       notifyJs_JSONObject("errors",frontCam);
+       notifyJs_JSONObject("errors",backCam );
      }
      catch(CameraAccessException    e) {throw new Exception(e);       }
      catch(JSONException            e) {throw new Exception(e);       }
