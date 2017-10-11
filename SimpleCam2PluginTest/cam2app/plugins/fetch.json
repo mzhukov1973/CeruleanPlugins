@@ -1,18 +1,18 @@
 {
-    "cordova-plugin-whitelist": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-whitelist@1"
-        },
-        "is_top_level": true,
-        "variables": {}
+  "cordova-plugin-whitelist": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-whitelist@1"
     },
-    "cw.plugins.cam2plug": {
-        "source": {
-            "type": "local",
-            "path": "/home/mzhukov/GitHub/CeruleanPlugins/SimpleCam2PluginTest/cam2plug"
-        },
-        "is_top_level": true,
-        "variables": {}
-    }
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cw.plugins.cam2plug": {
+    "source": {
+      "type": "local",
+      "path": "/home/mzhukov/GitHub/CeruleanPlugins/SimpleCam2PluginTest/cam2plug"
+    },
+    "is_top_level": true,
+    "variables": {}
+  }
 }

@@ -21,9 +21,28 @@ var app = {
         app.strcamAccess = 'Unknown';
     },
 
-    displayCamState: function(camStateObject,htmlContainer) {
+    updateErrorsList: function(errorsObj,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<br>N:-------------<br>"+JSON.stringify(errorsObj);
+    },
+
+    updateCaller: function(callerStr,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<br><span class='blue'>caller: <br>"+callerStr+"</span><br>";
+    },
+
+
+    displayCamState: function(camStateObject,htmlContainerId) {
       var camStateMarkup = '<span style="font-weight:700;color:black;">P</span><span style="font-weight:400;color:green;">la</span><span style="font-weight:400;color:red;">ce</span><span style="font-weight:400;color:black;">ho</span><span style="font-weight:400;color:blue;">ld</span><span style="font-weight:700;color:rgba(255,0,0,1);">er</span>';
-      htmlContainer.innerHTML = camStateMarkup;
+      document.getElementById(htmlContainerId).innerHTML += camStateMarkup;
+    },
+
+    displayCamAccess: function(camAccessObject,htmlContainerId) {
+      var camAccessMarkup = '<br>camAccess = <strong>'+((camAccessObject)?'true':'false')+'</strong></br>';
+      document.getElementById(htmlContainerId).innerHTML += camAccessMarkup;
+    },
+
+    displayInitState: function(initStateObject,htmlContainerId) {
+      var initStateMarkup = '<br>initState = <strong>'+((initStateObject)?'true':'false')+'</strong></br>';
+      document.getElementById(htmlContainerId).innerHTML += initStateMarkup;
     },
 
     j2jsCallback: function(jsonObj) {
@@ -35,23 +54,34 @@ var app = {
         if (jsonObj['initState']) {app.strInitState = 'Fully';document.getElementById('initState1').classList.add('green');document.getElementById('initState1').classList.remove('red');document.getElementById('initState1').classList.remove('black');}
         else                      {app.strInitState = 'Not Fully';document.getElementById('initState1').classList.add('red');document.getElementById('initState1').classList.remove('green');document.getElementById('initState1').classList.remove('black');}
         console.log('Java=>js link: Cam2Plug plugin is currently: \'' + app.strInitState + ' initialised\'!');
+        console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         document.getElementById('initState1').innerHTML = app.strInitState + ' initialised';
+        app.displayInitState(jsonObj['initState'],'megaStatus');
+        app.updateCaller(jsonObj['caller'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camAccess')) {
         if (jsonObj['camAccess']) {app.strCamAccess = 'Granted';document.getElementById('camAccess1').classList.add('green');document.getElementById('camAccess1').classList.remove('red');document.getElementById('camAccess1').classList.remove('black');}
         else                      {app.strCamAccess = 'Denied';document.getElementById('camAccess1').classList.add('red');document.getElementById('camAccess1').classList.remove('green');document.getElementById('camAccess1').classList.remove('black');}
         console.log('Java=>js link: Camera access for the plugin is currently: \'' + app.strCamAccess + '\'.');
+        console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         document.getElementById('camAccess1').innerHTML = app.strCamAccess;
+        app.displayCamAccess(jsonObj['camAccess'],'megaStatus');
+        app.updateCaller(jsonObj['caller'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camState')) {
         console.log('Java=>js link: camState is currently:');console.log(jsonObj['camState']);
-        displayCamState(jsonObj['camState'],document.getElementById('megaStatus'));
+        console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
+        app.displayCamState(jsonObj['camState'],'megaStatus');
+        app.updateCaller(jsonObj['caller'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'errors')) {
         console.log('Java=>js link: errors object currently looks like this:');console.log(jsonObj['errors']);
+        console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
+        app.updateErrorsList(jsonObj['errors'],'megaStatus');
+        app.updateCaller(jsonObj['caller'],'megaStatus');
       }
     },
 

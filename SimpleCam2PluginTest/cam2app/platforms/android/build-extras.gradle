@@ -1,7 +1,7 @@
 ext.postBuildExtras = {
     android {
 
-        defaultConfig {   jackOptions { enabled true  }   }
+        defaultConfig {  jackOptions { enabled true  }   }
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -9,3 +9,4 @@ ext.postBuildExtras = {
         }
     }
 }
+
