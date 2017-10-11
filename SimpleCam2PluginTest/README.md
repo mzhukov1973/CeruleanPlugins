@@ -33,79 +33,100 @@
 
 **[&#xA0;&#xA0;]** **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
 
-**[&#xA0;&#xA0;]** In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
+**[&#xA0;&#xA0;]** **Message Queue mechanism.** In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Add mandatory timestamp field to message format.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Create a task that runs in a separate background thread, serving the message queue.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Create and formalise queue handling protocol, class(?... perhaps just a task?..).
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Formalise message format. 
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** In message format provide for the ability to combine enqueued messages into one big message, to save on overhead. To this end, among other things:
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Timestamp should be added on a notifyJs_xxx() functions level, so that message superimposer would know the exact message precedence.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Flag, governing messages' "*combinability*" should be set at the same level.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Superimposer algorithm should combine the combinable, skip the uncombinable and sort the resulting new message queue according to every messages' effective timestamp, so that time uniformity is not lost.
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Make caller id property of a message an option, given (e.g.) as an argument to notifyJs_xxx() function family. 
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#xA0;&#xA0;**]** Combine notifyJs_xxx() function family into one function, that accepts different argument types (a-la multiple constructors). 
+
 
 **[**&#x00B1;**]** Get to the Camera:
 
-&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Identify all available cameras, choose the two we need, i.e. front and back cameras.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Identify all available cameras, choose the two we need, i.e. front and back cameras.~~
 
-&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Find out all camera-related device capabilities that are relevant to us. In broad terms, these are:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Minimal resolution available when using the format, that is most easy overhead-wise.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Minimal resolution available when using the format, that is most easy overhead-wise.~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum expected sustained FPS at that resolution.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum expected sustained FPS at that resolution.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Ability to switch off unneeded complications, most importantly:
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Ability to switch off unneeded complications, most importantly:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Auto-focus~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Auto-focus~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Automatic exposure~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Automatic exposure~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Presence of high-speed burst video capture capability. And more specifically:
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Presence of high-speed burst video capture capability. And more specifically:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Formats and frame dimensions, supported in high-speed capture mode.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Formats and frame dimensions, supported in high-speed capture mode.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The smallest available resolution for this mode, coupled with the appropriate image format.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The smallest available resolution for this mode, coupled with the appropriate image format.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The best FPS we can reliably expect under these circumstances.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The best FPS we can reliably expect under these circumstances.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Some simple form of an actual test to see if we are anywhere near the calculated FPS in practice.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum high-speed capture burst duration we can attain on this device in practical terms.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Maximum high-speed capture burst duration we can attain on this device in practical terms.
 
-&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Do so, jumping through every hoop official Android docs prescribe to jump through - adhere to proper protocol as much as possible.~~
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Store all the this information in a conveniently compact and structured way - container should be easy for storage and retrieval and contents must yield to perusal with as little overhead as possible. (Even a well thought-out JSONObject might do the trick.)
 
-&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Arrange reporting this info to **js** side both on demand and on change. 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x00B1;**]** Arrange reporting this info to **js** side both on demand and on change. 
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~At first just dumping it all is enough.~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~At first just dumping it all is enough.~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Next step would be to implement an ability to poll just a subset of this data.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Next step would be to implement an ability to poll just a subset of this data.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
 
-&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Implement (switchable on and off) video stream output to a visible surface.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Implement (switchable on and off) video stream output to a visible surface.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Implement video output to an Allocation surface, remaining completely in the background.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Implement video output to an Allocation surface, remaining completely in the background.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** At a later stage, re-implement all video processing that is required by our protocol in Renderscript, mainly to take advantage of serious parallelism, offered by Renderscript and many-cored CPUs found on modern devices.
 
 **[&#xA0;&#xA0;]** Implement the basic semantic blocks of the **Pub** app:
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Always-on (when switched on) Observer, that lives 100% in the background.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Always-on (when switched on) Observer, that lives 100% in the background.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Eye-centred UI with minimal controls and detailed display of what's going on with Observer thread.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Eye-centred UI with minimal controls and detailed display of what's going on with Observer thread.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Traditional notification system (to get users' attention when a suitable message or SMS arrives).
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Traditional notification system (to get users' attention when a suitable message or SMS arrives).
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal unprotected local storage system for untransmitted message queues and general state of the app (ideally it should be sudden reboot proof too).
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal unprotected local storage system for untransmitted message queues and general state of the app (ideally it should be sudden reboot proof too).
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Final version of the QR component.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Final version of the QR component.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Basic message-processing mechanics (transmission/interception of messages, chunks, handing chunks over (and receiving them from) the **Priv** app, etc).
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Basic message-processing mechanics (transmission/interception of messages, chunks, handing chunks over (and receiving them from) the **Priv** app, etc).
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal flash-based command logic.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal flash-based command logic.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** At a later date explore the option of **Priv**&#x279E;**Pub** data transmission via high-speed burst captures/analysis.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** At a later date explore the option of **Priv**&#x279E;**Pub** data transmission via high-speed burst captures/analysis.
 
-&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal **Priv** app authentication, to at least attempt to get in the way of foreign **Priv** app trying to spoil things. 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** Minimal **Priv** app authentication, to at least attempt to get in the way of foreign **Priv** app trying to spoil things. 
 
 **[&#xA0;&#xA0;]** Create and implement minimal mandatory message format - timestamps, etc.
 ###### 0.0.3
@@ -200,3 +221,7 @@ notifyJs_JSONObject("errors",    cameraIdsEtc       );
 
 [comment]: # (Some Unicode symbols: a bold <not used> left-to-right arrow:&#x2794; another <used> bold left-to-right arrow:&#x279C; a non-bold <used> left-to-right arrow:&#x279E; another non-bold <not used> left-to-right arrow:&#x279D; a very nice non-bold right arrow:&#x2192; a slightly 3D empty checkbox<GOOD>:&#x274F; beautiful check-marks, bold<GOOD, MAY BE USED BETWEEN SQUARE BRACKETS>:&#x2714; and not bold<WORSE>:&#x2713; beautiful checkbox crosses, bold<GOOD, MAY BE USED BETWEEN SQUARE BRACKETS>:&#x2718; and not bold<WORSE>:&#x2717; a warning sign:&#x26A0; a framed key:&#x26BF; a high voltage sign:&#x26A1; a Russian-style number sign:&#x2116; an information sign:&#x2139; a skull and crossbones:&#x2620; a radioactive sign:&#x2622; a bio-hazard sign:&#x2623; a hammer and sickle:&#x262D; a trademark sign:&#x2122; a 'Reserved' symbol:&#x00AE; a copyright symbol:&#x00A9; a footnote bookmark <dagger - cross-like>:&#x2020; 
 a footnote bookmark <double dagger - cross-like>:&#x2021; a small footnote-mark style black star:&#x22C6; an 'exists' symbol:&#x2203; a 'does not exist' symbol:&#x2204; a 'for any' symbol:&#x22C1; a 'for all' symbol:&#x2200; a capital lambda:&#x039B; a large plus symbol:&#x2795; a large minus symbol:&#x2796; a 'minus-plus' symbol:&#x2213; a 'plus-minus' symbol:&#x00B1; an 'of the same order of magnitude' sign:&#x223D;)
+
+[comment]: # (<ruby> A <rt>&lt;bold&gt;</rt></ruby> <== a cool one!)
+
+[comment]: # (<details><summary>Sort of a heading</summary><p>Hidden stuff.</p><p>More hidden stuff.</p></details> <== some trivial interactivity, probably shall never need it though.)
