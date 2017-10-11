@@ -98,7 +98,7 @@
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** With the next one being implementation of the ability to subscribe to all or part of it, to rely on **Java** side of things to push changes to **js** side, once they occur.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better it this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[&#xA0;&#xA0;]** The following phase would be to create a simulacrum of the container with data on **js** side (JSONObject looks even better at this point as a candidate) and make them self-synchronising, so that camera state and capabilities are always known on both sides of the bridge.
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;**[**&#x2714;**]** ~~Arrange the code so, that it is easy to select which camera the plugin is working with - both for the programmer and for the app/device itself (minimal code changes, minimal re-calculations overhead, etc).~~
 
