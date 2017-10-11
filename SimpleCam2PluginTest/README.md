@@ -45,15 +45,15 @@
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> In message format provide for the ability to combine enqueued messages into one big message, to save on overhead. To this end, among other things:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Timestamp should be added on a notifyJs_xxx() functions level, so that message superimposer would know the exact message precedence.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Timestamp should be added on a `notifyJs_xxx()` functions level, so that message superimposer would know the exact message precedence.
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Flag, governing messages' "*combinability*" should be set at the same level.
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Superimposer algorithm should combine the combinable, skip the uncombinable and sort the resulting new message queue according to every messages' effective timestamp, so that time uniformity is not lost.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Make caller id property of a message an option, given (e.g.) as an argument to notifyJs_xxx() function family. 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Make caller id property of a message an option, given (e.g.) as an argument to `notifyJs_xxx()` function family. 
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Combine notifyJs_xxx() function family into one function, that accepts different argument types (a-la multiple constructors). 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Combine `notifyJs_xxx()` function family into one function, that accepts different argument types (a-la multiple constructors). 
 
 
 **[**&#x00B1;**]** Get to the Camera:
