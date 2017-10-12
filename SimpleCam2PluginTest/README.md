@@ -23,35 +23,37 @@
 
 **[**&#x2714;**]** ~~Redo the semantics of `onRestart()`, `onStart()`, `onResume()`, `onPause()`, `onStop()` and `onDestroy()` event handlers, taking into account the material from Android developers' guide [article](https://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle) on `Activity` class.~~
 ##### 0.0.2
-**[&#xA0;&#xA0;]** *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
+**[**&#xA0;&#xA0;**]** *(phase<sup>2</sup>: when there **are** some resources to acquire/relinquish)* Implement proper reaction to `Restart`, `Start`, `Resume`, `Pause`, `Stop` and `Destroy` events - especially concerning relinquishing and re-acquisitioning hardware resources.
 
-**[&#xA0;&#xA0;]** Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
+**[**&#xA0;&#xA0;**]** Gradually add the actual **CeruleanWhisper** functionality to the plugin, testing it in the process.
 
-**[&#xA0;&#xA0;]** Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
+**[**&#xA0;&#xA0;**]** Both image-acquisition and image-analysis threads should be background threads, not hampering the UI in any way.
 
-**[&#xA0;&#xA0;]** Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
+**[**&#xA0;&#xA0;**]** Image stream should be set to lowest resolution possible to ease hardware load and increase FPS.
 
-**[&#xA0;&#xA0;]** **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
+**[**&#xA0;&#xA0;**]** **js** should be continuously notified of the state of the observation task, as per the specification, until the observation mode is switched off (~~messages?~~ arrange it through normal callbacks/synthetic **js** events).
 
-**<ruby>[&#xA0;&#xA0;]<rt>PRIORITY</rt></ruby>** **Message Queue mechanism.** In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
+<ruby>**[**&#x00B1;**]**<rt>PRIORITY</rt></ruby> **Message Queue mechanism.** In case of comms channel unavailability when attempting to send a message from **Java** to **js** messages should become queued and later auto-sent, when channel re-appears. Probably should combine them in one big message, with some messages overwriting each other and some not (this should be governed by a flag with each message. Those which are not to be superimposed on one another, deleting history of messages generated during comms channel unavailability, should be sent consecutively, once channel gets re-established.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Add mandatory timestamp field to message format.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Add mandatory timestamp field to message format.~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Create a task that runs in a separate background thread, serving the message queue.
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Create and formalise queue handling protocol, class(?... perhaps just a task?..).
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Formalise message format. 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Formalise message format.~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> In message format provide for the ability to combine enqueued messages into one big message, to save on overhead. To this end, among other things:
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x00B1;**]**<rt>PRIORITY</rt></ruby> In message format provide for the ability to combine enqueued messages into one big message, to save on overhead. To this end, among other things:
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Timestamp should be added on a `notifyJs_xxx()` functions level, so that message superimposer would know the exact message precedence.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Timestamp should be added on a `notifyJs_xxx()` functions level, so that message superimposer would know the exact message precedence.~~
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Flag, governing messages' "*combinability*" should be set at the same level.
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Flag, governing messages' "*combinability*" should be set at the same level.~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Superimposer algorithm should combine the combinable, skip the uncombinable and sort the resulting new message queue according to every messages' effective timestamp, so that time uniformity is not lost.
 
-&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Make caller id property of a message an option, given (e.g.) as an argument to `notifyJs_xxx()` function family. 
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Make caller id property of a message an option, given (e.g.) as an argument to `notifyJs_xxx()` function family.~~
+
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#x2714;**]**<rt><del>PRIORITY</del></rt></ruby> ~~Combine all options (so far:`boolean provideCallerId`, `long timeStamp` and `boolean isCombinable`) into one array of `JSONObject`s, provide default values for all options and make it (the extra argument) - optional for all `notifyJs_xxx()` functions.~~
 
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<ruby>**[**&#xA0;&#xA0;**]**<rt>PRIORITY</rt></ruby> Combine `notifyJs_xxx()` function family into one function, that accepts different argument types (a-la multiple constructors). 
 
