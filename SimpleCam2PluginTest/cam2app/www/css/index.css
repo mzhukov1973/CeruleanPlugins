@@ -199,3 +199,10 @@ div
  text-shadow:0px 0px 2px rgba(255,255,255,1);
  font-weight:700;
 }
+
+.gray
+{
+ color:rgba(100,100,100,0.8);
+ text-shadow:0px 0px 2px rgba(255,255,255,1);
+ font-weight:400;
+}

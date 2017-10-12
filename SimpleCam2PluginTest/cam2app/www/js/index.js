@@ -29,6 +29,13 @@ var app = {
       document.getElementById(htmlContainerId).innerHTML += "<br><span class='blue'>caller: <br>"+callerStr+"</span><br>";
     },
 
+    updateTimestamp: function(timeStamp,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<br><span class='gray'>timeStamp(ns): <br>"+timeStamp.toString()+"</span><br>";
+    },
+
+    updateIsCombinable: function(isCombinable,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<br><small>isCombinable: <br>"+isCombinable.toString()+"</small><br>";
+    },
 
     displayCamState: function(camStateObject,htmlContainerId) {
       var camStateMarkup = '<span style="font-weight:700;color:black;">P</span><span style="font-weight:400;color:green;">la</span><span style="font-weight:400;color:red;">ce</span><span style="font-weight:400;color:black;">ho</span><span style="font-weight:400;color:blue;">ld</span><span style="font-weight:700;color:rgba(255,0,0,1);">er</span>';
@@ -58,6 +65,8 @@ var app = {
         document.getElementById('initState1').innerHTML = app.strInitState + ' initialised';
         app.displayInitState(jsonObj['initState'],'megaStatus');
         app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.updateTimestamp(jsonObj['timeStamp'],'megaStatus');
+        app.updateIsCombinable(jsonObj['isCombinable'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camAccess')) {
@@ -68,6 +77,8 @@ var app = {
         document.getElementById('camAccess1').innerHTML = app.strCamAccess;
         app.displayCamAccess(jsonObj['camAccess'],'megaStatus');
         app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.updateTimestamp(jsonObj['timeStamp'],'megaStatus');
+        app.updateIsCombinable(jsonObj['isCombinable'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camState')) {
@@ -75,6 +86,8 @@ var app = {
         console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         app.displayCamState(jsonObj['camState'],'megaStatus');
         app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.updateTimestamp(jsonObj['timeStamp'],'megaStatus');
+        app.updateIsCombinable(jsonObj['isCombinable'],'megaStatus');
       }
 
       else if (Object.prototype.hasOwnProperty.call(jsonObj, 'errors')) {
@@ -82,6 +95,8 @@ var app = {
         console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         app.updateErrorsList(jsonObj['errors'],'megaStatus');
         app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.updateTimestamp(jsonObj['timeStamp'],'megaStatus');
+        app.updateIsCombinable(jsonObj['isCombinable'],'megaStatus');
       }
     },
 
