@@ -53,6 +53,8 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.params.StreamConfigurationMap;
 
 import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
+
 //import android.graphics.SurfaceTexture;
 
 //import android.view.Surface;
@@ -168,6 +170,8 @@ public class Cam2Plug extends CordovaPlugin {
 
 
 /*===============================Assorted utilities===================================================================================================================*/
+/* This should be the entry point to message queue, that is being run buy a queue manager class (that reacts to events) in a separate thread. */
+
  private void sendToJs(JSONObject msg) {
   PluginResult dataResult = new PluginResult(PluginResult.Status.OK, msg);
   dataResult.setKeepCallback(true);
@@ -192,29 +196,7 @@ public class Cam2Plug extends CordovaPlugin {
 /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 /*~~~notifyJs_xxx(...) functions:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
  private void notifyJs_bool(String propName,boolean propValue, JSONObject... flagsObjectsArray) {
-   String lTG = "[notifyJs_bool_"+propName+"] ", caller;
-   StackTraceElement[] stackTraceElements;
-   boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
-   long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
-   boolean isCombinable = false; if (flagsObjectsArray.length >= 3) {isCombinable = flagsObjectsArray[2].optBoolean("isCombinable",false);  } else { isCombinable = false; }                                                                     /*if ommited, <isCombinable> flag defaults to false*/
-   JSONObject tmpObj = new JSONObject();
-   if (doCallerId) {
-     stackTraceElements = Thread.currentThread().getStackTrace();}
-     caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
-     LOG.w(gTG, lTG+"Caller: "+caller);
-   }
-   if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
-   else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
-   else {
-     LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
-      try { tmpObj.put(propName,String.valueOf(propValue)); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
-      sendToJs(tmpObj); 
-     LOG.d(gTG, lTG+"Notification sent....");
-   }
- }
-
- private void notifyJs_String(String propName,String propValue,JSONObject... flagsObjectsArray) {
-   String lTG = "[notifyJs_String_"+propName+"] ", caller;
+   String lTG = "[notifyJs_bool_"+propName+"] ", caller = "";
    StackTraceElement[] stackTraceElements;
    boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
    long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
@@ -229,14 +211,36 @@ public class Cam2Plug extends CordovaPlugin {
    else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
    else {
      LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
-      try { tmpObj.put(propName, JSONObject.quote(propValue)); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
+      try { tmpObj.put(propName,String.valueOf(propValue)); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
+      sendToJs(tmpObj); 
+     LOG.d(gTG, lTG+"Notification sent....");
+   }
+ }
+
+ private void notifyJs_String(String propName,String propValue,JSONObject... flagsObjectsArray) {
+   String lTG = "[notifyJs_String_"+propName+"] ", caller = "";
+   StackTraceElement[] stackTraceElements;
+   boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
+   long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
+   boolean isCombinable = false; if (flagsObjectsArray.length >= 3) {isCombinable = flagsObjectsArray[2].optBoolean("isCombinable",false);  } else { isCombinable = false; }                                                                     /*if ommited, <isCombinable> flag defaults to false*/
+   JSONObject tmpObj = new JSONObject();
+   if (doCallerId) {
+     stackTraceElements = Thread.currentThread().getStackTrace();
+     caller = "Caller class: " + stackTraceElements[3].getClassName() + " from file: " +  stackTraceElements[3].getFileName() + ", line number: " + String.valueOf(stackTraceElements[3].getLineNumber()) + " (method: " + stackTraceElements[3].getMethodName() + "), and looks like: '" + stackTraceElements[3].toString() + "'!";
+     LOG.w(gTG, lTG+"Caller: "+caller);
+   }
+   if (commsCallbackContext == null) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext is null (i.e. js hasn't yet called us to establish comms link....");}
+   else if (commsCallbackContext.isFinished()) {LOG.d(gTG, lTG+"Need to notify js about "+propName+", but can't because commsCallbackContext.isFinished() returns true (i.e. it has already been used at least once and PluginResult.KeepCallback wasn't set to true at the moment, so commsCallbackContext burned after one use)....");}
+   else {
+     LOG.d(gTG, lTG+"Notifying js about "+propName+"....");
+      try { tmpObj.put(propName, propValue); if (doCallerId){tmpObj.put("caller",JSONObject.quote(caller));} tmpObj.put("isCombinable",isCombinable); tmpObj.put("timeStamp",timeStamp); } catch (JSONException e) { throw new RuntimeException(e); }
       sendToJs(tmpObj); 
      LOG.d(gTG, lTG+"Notification sent....");
    }
  }
 
  private void notifyJs_JSONObject(String propName, JSONObject propValue, JSONObject... flagsObjectsArray) {
-   String lTG = "[notifyJs_JSONObject_"+propName+"] ", caller;
+   String lTG = "[notifyJs_JSONObject_"+propName+"] ", caller = "";
    StackTraceElement[] stackTraceElements;
    boolean doCallerId   = true;  if (flagsObjectsArray.length >= 1) {doCallerId   = flagsObjectsArray[0].optBoolean("provideCallerId",true);} else { doCallerId   = true;  }                                                                     /*if ommited, <provideCallerId> flag defaults to true*/
    long    timeStamp    = 0;     if (flagsObjectsArray.length >= 2) {timeStamp    = flagsObjectsArray[1].optLong("timeStamp",0);            } else { timeStamp    = 0;     } if (timeStamp==0) {timeStamp = SystemClock.elapsedRealtimeNanos();} /*if ommited or zero, timeStamp flag defaults to the current value of elapsedRealtimeNanos()*/
@@ -315,7 +319,6 @@ public class Cam2Plug extends CordovaPlugin {
 /*=======================================Cam-related stuff============================================================================================================*/
   private android.app.Activity                      theActivity; /* ACTIVITY IS THE CONTEXT!!!!! */
   private CameraManager                           cameraManager;
-  private CameraCharacteristics           cameraCharacteristics;
   private CameraCharacteristics      frontCameraCharacteristics;
   private CameraCharacteristics       backCameraCharacteristics;
   private StreamConfigurationMap frontCamStreamConfigurationMap;
@@ -333,9 +336,12 @@ public class Cam2Plug extends CordovaPlugin {
 ////// private SurfaceHolder mySurfaceHolder;
 
  private void initNamesReference() {
-   formatNames.put(             "imageFormats",       JSONObject.quote("{ " + "\"" + String.valueOf(ImageFormat.DEPTH16) + "\":\"DEPTH16\", " + "\"" + String.valueOf(ImageFormat.DEPTH_POINT_CLOUD + "\":\"DEPTH_POINT_CLOUD\", " + "\"" + String.valueOf(ImageFormat.FLEX_RGBA_8888) + "\":\"FLEX_RGBA_8888\", " + "\"" + String.valueOf(ImageFormat.FLEX_RGB_888 + "\":\"FLEX_RGB_888\", " + "\"" + String.valueOf(ImageFormat.JPEG) + "\":\"JPEG\", " + "\"" + String.valueOf(ImageFormat.NV16 + "\":\"NV16\", " + "\"" + String.valueOf(ImageFormat.NV21) + "\":\"NV21\", " + "\"" + String.valueOf(ImageFormat.PRIVATE + "\":\"PRIVATE\", " + "\"" + String.valueOf(ImageFormat.RAW10) + "\":\"RAW10\", " + "\"" + String.valueOf(ImageFormat.RAW12 + "\":\"RAW12\", " + "\"" + String.valueOf(ImageFormat.RAW_PRIVATE) + "\":\"RAW_PRIVATE\", " + "\"" + String.valueOf(ImageFormat.RAW_SENSOR + "\":\"RAW_SENSOR\", " + "\"" + String.valueOf(ImageFormat.RGB_565) + "\":\"RGB_565\", " + "\"" + String.valueOf(ImageFormat.UNKNOWN + "\":\"UNKNOWN\", " + "\"" + String.valueOf(ImageFormat.YUV_420_888) + "\":\"YUV_420_888\", " + "\"" + String.valueOf(ImageFormat.YUV_422_888 + "\":\"YUV_422_888\", " + "\"" + String.valueOf(ImageFormat.YUV_444_888) + "\":\"YUV_444_888\", " + "\"" + String.valueOf(ImageFormat.YUY2 + "\":\"YUY2\", " + "\"" + String.valueOf(ImageFormat.YV12) + "\":\"YV12\"" + " }"));
-   formatNames.put(             "pixelFormats",       JSONObject.quote("{ " + "\"" + String.valueOf(PixelFormat.A_8) + "\":\"A_8\", " + "\"" + String.valueOf(PixelFormat.JPEG) + "\":\"JPEG\", " + "\"" + String.valueOf(PixelFormat.LA_88) + "\":\"LA_88\", " + "\"" + String.valueOf(PixelFormat.L_8) + "\":\"L_8\", " + "\"" + String.valueOf(PixelFormat.OPAQUE) + "\":\"OPAQUE\", " + "\"" + String.valueOf(PixelFormat.RGBA_1010102) + "\":\"RGBA_1010102\", " + "\"" + String.valueOf(PixelFormat.RGBA_4444) + "\":\"RGBA_4444\", " + "\"" + String.valueOf(PixelFormat.RGBA_5551) + "\":\"RGBA_5551\", " + "\"" + String.valueOf(PixelFormat.RGBA_8888) + "\":\"RGBA_8888\", " + "\"" + String.valueOf(PixelFormat.RGBA_F16) + "\":\"RGBA_F16\", " + "\"" + String.valueOf(PixelFormat.RGBX_8888) + "\":\"RGBX_8888\", " + "\"" + String.valueOf(PixelFormat.RGB_332) + "\":\"RGB_332\", " + "\"" + String.valueOf(PixelFormat.RGB_565) + "\":\"RGB_565\", " + "\"" + String.valueOf(PixelFormat.RGB_888) + "\":\"RGB_888\", " + "\"" + String.valueOf(PixelFormat.TRANSLUCENT) + "\":\"TRANSLUCENT\", " + "\"" + String.valueOf(PixelFormat.TRANSPARENT) + "\":\"TRANSPARENT\", " + "\"" + String.valueOf(PixelFormat.UNKNOWN) + "\":\"UNKNOWN\", " + "\"" + String.valueOf(PixelFormat.YCbCr_420_SP) + "\":\"YCbCr_420_SP\", " + "\"" + String.valueOf(PixelFormat.YCbCr_422_I) + "\":\"YCbCr_422_I\", " + "\"" + String.valueOf(PixelFormat.YCbCr_422_SP) + "\":\"YCbCr_422_SP\"" + " }"));
-   controlEffectsModeNames.put( "controlEffectModes", JSONObject.quote("{ " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_OFF) + "\":\"CONTROL_EFFECT_MODE_OFF\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_MONO) + "\":\"CONTROL_EFFECT_MODE_MONO\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_NEGATIVE) + "\":\"CONTROL_EFFECT_MODE_NEGATIVE\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_SOLARIZE) + "\":\"CONTROL_EFFECT_MODE_SOLARIZE\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_SEPIA) + "\":\"CONTROL_EFFECT_MODE_SEPIA\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_POSTERIZE) + "\":\"CONTROL_EFFECT_MODE_POSTERIZE\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_WHITEBOARD) + "\":\"CONTROL_EFFECT_MODE_WHITEBOARD\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_BLACKBOARD) + "\":\"CONTROL_EFFECT_MODE_BLACKBOARD\", " + "\"" + String.valueOf(CameraMetaData.CONTROL_EFFECT_MODE_AQUA) + "\":\"CONTROL_EFFECT_MODE_AQUA\"" + " }"));
+   try {
+     formatNames.put(             "imageFormats",       new JSONObject("{ " + "\"" + String.valueOf(ImageFormat.DEPTH16) + "\":\"DEPTH16\", " + "\"" + String.valueOf(ImageFormat.DEPTH_POINT_CLOUD) + "\":\"DEPTH_POINT_CLOUD\", " + "\"" + String.valueOf(ImageFormat.FLEX_RGBA_8888) + "\":\"FLEX_RGBA_8888\", " + "\"" + String.valueOf(ImageFormat.FLEX_RGB_888) + "\":\"FLEX_RGB_888\", " + "\"" + String.valueOf(ImageFormat.JPEG) + "\":\"JPEG\", " + "\"" + String.valueOf(ImageFormat.NV16) + "\":\"NV16\", " + "\"" + String.valueOf(ImageFormat.NV21) + "\":\"NV21\", " + "\"" + String.valueOf(ImageFormat.PRIVATE) + "\":\"PRIVATE\", " + "\"" + String.valueOf(ImageFormat.RAW10) + "\":\"RAW10\", " + "\"" + String.valueOf(ImageFormat.RAW12) + "\":\"RAW12\", " + "\"" + String.valueOf(ImageFormat.RAW_PRIVATE) + "\":\"RAW_PRIVATE\", " + "\"" + String.valueOf(ImageFormat.RAW_SENSOR) + "\":\"RAW_SENSOR\", " + "\"" + String.valueOf(ImageFormat.RGB_565) + "\":\"RGB_565\", " + "\"" + String.valueOf(ImageFormat.UNKNOWN) + "\":\"UNKNOWN\", " + "\"" + String.valueOf(ImageFormat.YUV_420_888) + "\":\"YUV_420_888\", " + "\"" + String.valueOf(ImageFormat.YUV_422_888) + "\":\"YUV_422_888\", " + "\"" + String.valueOf(ImageFormat.YUV_444_888) + "\":\"YUV_444_888\", " + "\"" + String.valueOf(ImageFormat.YUY2) + "\":\"YUY2\", " + "\"" + String.valueOf(ImageFormat.YV12) + "\":\"YV12\"" + " }"));
+     formatNames.put(             "pixelFormats",       new JSONObject("{ " + "\"" + String.valueOf(PixelFormat.OPAQUE) + "\":\"OPAQUE\", " + "\"" + String.valueOf(PixelFormat.RGBA_1010102) + "\":\"RGBA_1010102\", " + "\"" + String.valueOf(PixelFormat.RGBA_8888) + "\":\"RGBA_8888\", " + "\"" + String.valueOf(PixelFormat.RGBA_F16) + "\":\"RGBA_F16\", " + "\"" + String.valueOf(PixelFormat.RGBX_8888) + "\":\"RGBX_8888\", " + "\"" + String.valueOf(PixelFormat.RGB_565) + "\":\"RGB_565\", " + "\"" + String.valueOf(PixelFormat.RGB_888) + "\":\"RGB_888\", " + "\"" + String.valueOf(PixelFormat.TRANSLUCENT) + "\":\"TRANSLUCENT\", " + "\"" + String.valueOf(PixelFormat.TRANSPARENT) + "\":\"TRANSPARENT\", " + "\"" + String.valueOf(PixelFormat.UNKNOWN) + "\":\"UNKNOWN\"" + " }"));
+     controlEffectsModeNames.put( "controlEffectModes", new JSONObject("{ " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_OFF) + "\":\"CONTROL_EFFECT_MODE_OFF\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_MONO) + "\":\"CONTROL_EFFECT_MODE_MONO\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_NEGATIVE) + "\":\"CONTROL_EFFECT_MODE_NEGATIVE\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_SOLARIZE) + "\":\"CONTROL_EFFECT_MODE_SOLARIZE\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_SEPIA) + "\":\"CONTROL_EFFECT_MODE_SEPIA\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_POSTERIZE) + "\":\"CONTROL_EFFECT_MODE_POSTERIZE\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_WHITEBOARD) + "\":\"CONTROL_EFFECT_MODE_WHITEBOARD\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_BLACKBOARD) + "\":\"CONTROL_EFFECT_MODE_BLACKBOARD\", " + "\"" + String.valueOf(CameraMetadata.CONTROL_EFFECT_MODE_AQUA) + "\":\"CONTROL_EFFECT_MODE_AQUA\"" + " }"));
+   }
+   catch(JSONException e) {notifyJs_String("errors","Caught JSONException at initNamesReference()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>");}
  }
 
  private void setupOneCam(String camId, JSONObject camDataContainer, StreamConfigurationMap streamConfigurationMap, CameraCharacteristics cameraCharacteristics) {
@@ -365,9 +371,10 @@ public class Cam2Plug extends CordovaPlugin {
        }
        /***************************************************************************************************************************************/
 
+
        /***Get formats, their associated sizes and available effects:**************************************************************************/
        streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);//The active streamConfigurationMap object for one camera, stored in an array (of just two elements)
-       camDataContainer.put("streamConfigurationMap",JSONObject.quote(streamConfigurationMap.toString()));
+//       camDataContainer.put("streamConfigurationMap",streamConfigurationMap.toString()); /*...put(Sting,String) for the time being, until I figurew out objects' structure to convert it to JSONObject */
 
        formatsSizes = new JSONObject(); /* create empty container to store formats/sizes info */
        for (int format : streamConfigurationMap.getOutputFormats()) {
@@ -377,12 +384,12 @@ public class Cam2Plug extends CordovaPlugin {
            sizes.put(String.valueOf(i),s.toString()); /* fill newly created sizes JSONObject with (essentially) an array of String representation of sizes */
            i++;
          }
-         if      (formatNames.getJSONObject("imageFormats").optString(String.valueOf(format)).length>0) {formatName = formatNames.getJSONObject("imageFormats").optString(String.valueOf(format));}
-         else if (formatNames.getJSONObject("pixelFormats").optString(String.valueOf(format)).length>0) {formatName = formatNames.getJSONObject("pixelFormats").optString(String.valueOf(format));}
-         else                                                                                           {formatName = "Unknown format("+String.valueOf(format)+")"; LOG.e(gTG, lTG+"getOutputFormats() returned an unknown format (" + format + ")!");}
-         formatsSizes.put(String.valueOf(format),JSONObject.quote("{\"name\":\""+formatName+"\", \"sizes\":"+JSONObject.quote(sizes)+"}")); /* construct and add another format-sizes JSONObject to formatsSizes JSONObject */
+         if      (!(formatNames.getJSONObject("imageFormats").optString(String.valueOf(format)).isEmpty())) {formatName = formatNames.getJSONObject("imageFormats").optString(String.valueOf(format));}
+         else if (!(formatNames.getJSONObject("pixelFormats").optString(String.valueOf(format)).isEmpty())) {formatName = formatNames.getJSONObject("pixelFormats").optString(String.valueOf(format));}
+         else                                                                                               {formatName = "Unknown format("+String.valueOf(format)+")"; LOG.e(gTG, lTG+"getOutputFormats() returned an unknown format (" + format + ")!");}
+         formatsSizes.put(String.valueOf(format),new JSONObject("{\"name\":\""+formatName+"\", \"sizes\":"+sizes.toString()+"}")); /* construct and add another format-sizes JSONObject to formatsSizes JSONObject */
        }
-       camDataContainer.put("formatsAndSizes", JSONObject.quote(formatsSizes)); /* store the formats and sizes info in the main camera data container JSONObject */
+       camDataContainer.put("formatsAndSizes", formatsSizes); /* store the formats and sizes info in the main camera data container JSONObject */
 
        int[] camEffects0 = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_EFFECTS);
        effectsAvailable = new JSONObject();
@@ -390,7 +397,7 @@ public class Cam2Plug extends CordovaPlugin {
          effectsAvailable.put(String.valueOf(effect),controlEffectsModeNames.optString(String.valueOf(effect),"Unknown effect ("+String.valueOf(effect)+")!"));
          LOG.d(gTG, "Effect available: " + effect);
        }
-       camDataContainer.put("effectsAvailable", JSONObject.quote(effectsAvailable));
+       camDataContainer.put("effectsAvailable", effectsAvailable);
        /***************************************************************************************************************************************/
 
        /***Attempt to assess fastest FPS available here (must also do it via HighSpeedFPS methods etc):****************************************/
@@ -403,18 +410,20 @@ public class Cam2Plug extends CordovaPlugin {
          minFrameDur = streamConfigurationMap.getOutputMinFrameDuration(ImageFormat.YUV_420_888, minSize);//0 if unsupported or Long(ns) Minimal frame duration (for the given format/Size and assumng all mode AF AWB etc are set to OFF)
          if (minFrameDur != 0) {
            tmpFPSAttempt.put("minFrameDuration_ns",     minFrameDur);
-           tmpFPSAttempt.put("ImageFormat",             "ImageFormat.YUV_420_888");
-           tmpFPSAttempt.put("Size",                    JSONObject.quote("{\"width\":" + minSize.getWidth() + ", \"height\":" + String.valueOf(minSize.getHeight()) + "}"));
-           camDataContainer.put("highestFPSAssessment", JSONObject.quote(tmpFPSAttempt.toString()));
+           tmpFPSAttempt.put("ImageFormat",             "ImageFormat.YUV_420_888 ("+String.valueOf(ImageFormat.YUV_420_888)+")");
+           tmpFPSAttempt.put("Size",                    new JSONObject("{\"width\":" + String.valueOf(minSize.getWidth()) + ", \"height\":" + String.valueOf(minSize.getHeight()) + "}"));
+           camDataContainer.put("highestFPSAssessment", tmpFPSAttempt);
          }
        }
        else {/*...and if ImageFormat.YUV_420_888 is not unsupported:*/
-         LOG.w(gTG, lTG+" Format ImageFormat.YUV_420_888 (" + ImageFormat.YUV_420_888 + ") is not supported. Assumption is wrong. Skipping highestFPSAssessment.");
+         camDataContainer.put("highestFPSAssessment", new JSONObject("{\"error\":\"ImageFormat.YUV_420_888("+String.valueOf(ImageFormat.YUV_420_888)+")is not unsupported\"}"));
+         LOG.e(gTG, lTG+" Format ImageFormat.YUV_420_888 (" + ImageFormat.YUV_420_888 + ") is not supported. Assumption is wrong. Skipping highestFPSAssessment.");
        }
        /***************************************************************************************************************************************/
 
        /***Get CONTROL_AE_AVAILABLE_MODES:*****************************************************************************************************/
-       tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES).length]; controlAEModes = new JSONObject();
+       tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES).length];
+       controlAEModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
@@ -427,11 +436,12 @@ public class Cam2Plug extends CordovaPlugin {
          default: break;
         }
        }
-       camDataContainer.put("CONTROL_AE_AVAILABLE_MODES", JSONObject.quote(controlAEModes.toString()));
+       camDataContainer.put("CONTROL_AE_AVAILABLE_MODES", controlAEModes);
        /***************************************************************************************************************************************/
 
        /***Get CONTROL_AVAILABLE_MODES:********************************************************************************************************/
-       tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_MODES).length]; controlModes = new JSONObject();
+       tmpAr = new int[cameraCharacteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_MODES).length];
+       controlModes = new JSONObject();
        for(int i=0;i<tmpAr.length;i++)
        {
         switch(tmpAr[i])
@@ -443,11 +453,10 @@ public class Cam2Plug extends CordovaPlugin {
          default: break;
         }
        }
-       camDataContainer.put("CONTROL_AVAILABLE_MODES", JSONObject.quote(controlModes.toString()));
+       camDataContainer.put("CONTROL_AVAILABLE_MODES", controlModes);
        /***************************************************************************************************************************************/
 
      }
-     catch(CameraAccessException    e) {throw new Exception(e);       }
      catch(JSONException            e) {throw new Exception(e);       }
      catch(IllegalArgumentException e) {throw new RuntimeException(e);}
      catch(NullPointerException     e) {throw new RuntimeException(e);}
@@ -467,13 +476,13 @@ public class Cam2Plug extends CordovaPlugin {
 
    try {
      theActivity   = cordova.getActivity();
-     notifyJs_String("errors","Got theActivity from cordova.<br>It shows, that:<br>This apps package name is: "+theActivity.getPackageName()+"<br><hr>className: "+theActivity.getApplicationInfo().className+"<br>minSdkVersion: "+theActivity.getApplicationInfo().minSdkVersion+"<br>targetSdkVersion: "+theActivity.getApplicationInfo().targetSdkVersion+"<br><hr>");
+     notifyJs_String("info","Got theActivity from cordova.<br>It shows, that:<br>This apps package name is: "+theActivity.getPackageName()+"<br>className: "+theActivity.getApplicationInfo().className+"<br>minSdkVersion: "+theActivity.getApplicationInfo().minSdkVersion+"<br>targetSdkVersion: "+theActivity.getApplicationInfo().targetSdkVersion+"<br>");
      cameraManager = (CameraManager) theActivity.getSystemService(Context.CAMERA_SERVICE);
-     notifyJs_String("errors","Got CameraManager from cordova.<br>Activity: "+theActivity+"<br>Context.CAMERA_SERVICE: (String)\""+Context.CAMERA_SERVICE+"\"<br><hr>");
+     notifyJs_String("info","Got CameraManager from cordova.<br>Activity: "+theActivity+"<br>Context.CAMERA_SERVICE: (String): '"+Context.CAMERA_SERVICE+"'<br>");
      /*We are only interested in cameras with id of "0" or "1". Lets find out which one is back-facing and which one is forward-facing, see what each can do and store interesting for us stuff in two  JSONObjects (frontCam and backCam):*/
      try{
        camIdList = cameraManager.getCameraIdList();
-       notifyJs_String("errors","Got camera ids list from CameraManager.<br>It has "+camIdList.length+" elements, with the two first being: \""+camIdList[0]+"\" and \""+camIdList[1]+"\"<br><hr>");
+       notifyJs_String("info","Got camera ids list from CameraManager.<br>It has "+camIdList.length+" elements, with the two first being: '"+camIdList[0]+"' and '"+camIdList[1]+"'<br>");
        frontCameraCharacteristics = cameraManager.getCameraCharacteristics(camIdList[0]);
        if (frontCameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
          /* Do camera 0 as front, 1 as back: */
@@ -488,12 +497,11 @@ public class Cam2Plug extends CordovaPlugin {
          setupOneCam(camIdList[1], frontCam, frontCamStreamConfigurationMap, frontCameraCharacteristics);
        }
 
-       notifyJs_String("errors","Found out about two cams here.<br>Front-facing one has id: \'"+frontCam.optString("camId","unknown")+"\', and<br>Back-facing one has id: \'"+backCam.optString("camId","unknown")+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br><hr>");
-       notifyJs_JSONObject("errors",frontCam);
-       notifyJs_JSONObject("errors",backCam );
+       notifyJs_String("info","Found out about two cams here.<br>Front-facing one has id<sub>(String)</sub>: \'"+frontCam.optString("camId","unknown")+"\', and<br>Back-facing one has id<sub>(String)</sub>: \'"+backCam.optString("camId","unknown")+"\'.<br>N.B: They MUST both appear above!<br>If not - then there is trouble.<br>");
+       notifyJs_JSONObject("frontCam",frontCam);
+       notifyJs_JSONObject("backCam" ,backCam );
      }
      catch(CameraAccessException    e) {throw new Exception(e);       }
-     catch(JSONException            e) {throw new Exception(e);       }
      catch(IllegalArgumentException e) {throw new RuntimeException(e);}
    }
    catch (RuntimeException e) { notifyJs_String("errors","Caught RuntimeException at setupCam()!<br><br>The reason is given as:<br>"+e.toString()+"<br><br>While it itself seem to be caused by:<br>"+String.valueOf(e.getCause())+"<br><br><hr>"); }

@@ -22,26 +22,53 @@ var app = {
     },
 
     updateErrorsList: function(errorsObj,htmlContainerId) {
-      document.getElementById(htmlContainerId).innerHTML += "<br>N:-------------<br>"+JSON.stringify(errorsObj);
+      document.getElementById(htmlContainerId).innerHTML += "<hr><span class='errors'><strong>errors:</strong><br>"+JSON.stringify(errorsObj)+"</span><br>";
+    },
+
+    updateCamSummary: function(camObj,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<hr><span class='camObj'>" +
+                                                              "<strong>Cam Summary:</strong><br>"             +
+                                                              "<strong>camId: </strong>"                      + camObj["camId"] + "<br>" +
+                                                              "<strong>REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE: </strong>"                + camObj["REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE"].toString()                + "<br>" +
+                                                              "<strong>REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO: </strong>" + camObj["REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO"].toString() + "<br>" +
+                                                              "<strong>INFO_SUPPORTED_HARDWARE_LEVEL: </strong>"                               + camObj["INFO_SUPPORTED_HARDWARE_LEVEL"]                                          + "<br>" +
+                                                              "<strong>formatsAndSizes: </strong>"            + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["formatsAndSizes"])                + "</span></details><br>" +
+                                                              "<strong>effectsAvailable: </strong>"           + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["effectsAvailable"])               + "</span></details><br>" +
+                                                              "<strong>highestFPSAssessment: </strong>"       + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["highestFPSAssessment"])           + "</span></details><br>" +
+                                                              "<strong>CONTROL_AE_AVAILABLE_MODES: </strong>" + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["CONTROL_AE_AVAILABLE_MODES"])     + "</span></details><br>" +
+                                                              "<strong>CONTROL_AVAILABLE_MODES: </strong>"    + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["CONTROL_AVAILABLE_MODES"])        + "</span></details><br>" +
+                                                                                      "</span><br>";
+    },
+
+    updateInfo: function(infoObj,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<hr><span class='info'><strong>info:</strong><br>"+JSON.stringify(infoObj)+"</span><br>";
     },
 
     updateCaller: function(callerStr,htmlContainerId) {
-      document.getElementById(htmlContainerId).innerHTML += "<br><span class='blue'>caller: <br>"+callerStr+"</span><br>";
+      document.getElementById(htmlContainerId).innerHTML += "<span class='caller'><small><strong>caller:</strong><br>"+callerStr+"</small></span><br>";
     },
 
+    updateTimestamp: function(timeStamp,htmlContainerId) {
+      var timeStampDate = new Date(Math.round(timeStamp/1000000));
+      document.getElementById(htmlContainerId).innerHTML += "<span class='timestamp'><small><strong>timeStamp(ns):</strong>&nbsp;"+timeStampDate.toLocaleString()+"&nbsp;("+timeStamp.toString()+"<sub>ns</sub>)</small></span><br>";
+    },
+
+    updateIsCombinable: function(isCombinable,htmlContainerId) {
+      document.getElementById(htmlContainerId).innerHTML += "<span class='timestamp'><small><strong>isCombinable:</strong>&nbsp;"+isCombinable.toString()+"</small></span><br>";
+    },
 
     displayCamState: function(camStateObject,htmlContainerId) {
-      var camStateMarkup = '<span style="font-weight:700;color:black;">P</span><span style="font-weight:400;color:green;">la</span><span style="font-weight:400;color:red;">ce</span><span style="font-weight:400;color:black;">ho</span><span style="font-weight:400;color:blue;">ld</span><span style="font-weight:700;color:rgba(255,0,0,1);">er</span>';
+      var camStateMarkup = '<hr><span style="font-weight:700;color:black;">P</span><span style="font-weight:400;color:green;">la</span><span style="font-weight:400;color:red;">ce</span><span style="font-weight:400;color:black;">ho</span><span style="font-weight:400;color:blue;">ld</span><span style="font-weight:700;color:rgba(255,0,0,1);">er</span>';
       document.getElementById(htmlContainerId).innerHTML += camStateMarkup;
     },
 
     displayCamAccess: function(camAccessObject,htmlContainerId) {
-      var camAccessMarkup = '<br>camAccess = <strong>'+((camAccessObject)?'true':'false')+'</strong></br>';
+      var camAccessMarkup = '<hr>camAccess = <strong>'+((camAccessObject)?'true':'false')+'</strong></br>';
       document.getElementById(htmlContainerId).innerHTML += camAccessMarkup;
     },
 
     displayInitState: function(initStateObject,htmlContainerId) {
-      var initStateMarkup = '<br>initState = <strong>'+((initStateObject)?'true':'false')+'</strong></br>';
+      var initStateMarkup = '<hr>initState = <strong>'+((initStateObject)?'true':'false')+'</strong></br>';
       document.getElementById(htmlContainerId).innerHTML += initStateMarkup;
     },
 
@@ -56,32 +83,67 @@ var app = {
         console.log('Java=>js link: Cam2Plug plugin is currently: \'' + app.strInitState + ' initialised\'!');
         console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         document.getElementById('initState1').innerHTML = app.strInitState + ' initialised';
-        app.displayInitState(jsonObj['initState'],'megaStatus');
-        app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.displayInitState   (jsonObj['initState'   ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
       }
 
-      else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camAccess')) {
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'camAccess')) {
         if (jsonObj['camAccess']) {app.strCamAccess = 'Granted';document.getElementById('camAccess1').classList.add('green');document.getElementById('camAccess1').classList.remove('red');document.getElementById('camAccess1').classList.remove('black');}
         else                      {app.strCamAccess = 'Denied';document.getElementById('camAccess1').classList.add('red');document.getElementById('camAccess1').classList.remove('green');document.getElementById('camAccess1').classList.remove('black');}
         console.log('Java=>js link: Camera access for the plugin is currently: \'' + app.strCamAccess + '\'.');
         console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
         document.getElementById('camAccess1').innerHTML = app.strCamAccess;
-        app.displayCamAccess(jsonObj['camAccess'],'megaStatus');
-        app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.displayCamAccess   (jsonObj['camAccess'   ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
       }
 
-      else if (Object.prototype.hasOwnProperty.call(jsonObj, 'camState')) {
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'camState')) {
         console.log('Java=>js link: camState is currently:');console.log(jsonObj['camState']);
         console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
-        app.displayCamState(jsonObj['camState'],'megaStatus');
-        app.updateCaller(jsonObj['caller'],'megaStatus');
+        app.displayCamState    (jsonObj['camState'    ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
       }
 
-      else if (Object.prototype.hasOwnProperty.call(jsonObj, 'errors')) {
-        console.log('Java=>js link: errors object currently looks like this:');console.log(jsonObj['errors']);
-        console.log('Java=>js link: and the caller is:');console.log(jsonObj['caller']);
-        app.updateErrorsList(jsonObj['errors'],'megaStatus');
-        app.updateCaller(jsonObj['caller'],'megaStatus');
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'errors')) {
+        console.log('Java=>js link: errors object currently looks like this:'); console.log(jsonObj['errors']);
+        console.log('Java=>js link: and the caller is:');                       console.log(jsonObj['caller']);
+        app.updateErrorsList   (jsonObj['errors'      ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
+      }
+
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'info')) {
+        console.log('Java=>js link: info object currently looks like this:'); console.log(jsonObj['info']);
+        console.log('Java=>js link: and the caller is:');                     console.log(jsonObj['caller']);
+        app.updateInfo         (jsonObj['info'        ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
+      }
+
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'frontCam')) {
+        console.log('Java=>js link: frontCam object currently looks like this:'); console.log(jsonObj['frontCam']);
+        console.log('Java=>js link: and the caller is:');                         console.log(jsonObj['caller']);
+        app.updateCamSummary   (jsonObj['frontCam'    ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
+      }
+
+      if (Object.prototype.hasOwnProperty.call(jsonObj, 'backCam')) {
+        console.log('Java=>js link: backCam object currently looks like this:'); console.log(jsonObj['backCam']);
+        console.log('Java=>js link: and the caller is:');                        console.log(jsonObj['caller']);
+        app.updateCamSummary   (jsonObj['backCam'     ], 'megaStatus');
+        app.updateCaller       (jsonObj['caller'      ], 'megaStatus');
+        app.updateTimestamp    (jsonObj['timeStamp'   ], 'megaStatus');
+        app.updateIsCombinable (jsonObj['isCombinable'], 'megaStatus');
       }
     },
 
