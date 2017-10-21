@@ -2,7 +2,7 @@
   "name": "Cam2Plug",
   "version": "0.0.2-alpha1",
   "id": "cw.plugins.cam2plug",
-  "description": "A simple, straight-up, neat camera2 Cordova-Android plugin, written mainly out of frustration and/or for testing.",
+  "description": "A simple, straight-up, neat camera2 Cordova-Android plugin of the plugin-app pair, written mainly out of frustration and/or for testing. Please do not even consider using it in your project for the moment - it's mainly a playground to test stuff for now.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mzhukov1973/CeruleanPlugins.git"

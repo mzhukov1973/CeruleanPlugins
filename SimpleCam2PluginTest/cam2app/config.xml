@@ -21,5 +21,4 @@
     </platform>
     <engine name="android" spec="^6.3.0" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.2" />
-    <plugin name="cw.plugins.cam2plug" spec="~0.0.2-alpha1" />
 </widget>
