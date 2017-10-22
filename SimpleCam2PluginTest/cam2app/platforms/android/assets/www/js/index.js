@@ -26,14 +26,24 @@ var app = {
     },
 
     updateCamSummary: function(camObj,htmlContainerId) {
+      var tmpStr="";
       document.getElementById(htmlContainerId).innerHTML += "<hr><span class='camObj'>" +
                                                               "<strong>Cam Summary:</strong><br>"             +
                                                               "<strong>camId: </strong>"                      + camObj["camId"] + "<br>" +
                                                               "<strong>REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE: </strong>"                + camObj["REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE"].toString()                + "<br>" +
                                                               "<strong>REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO: </strong>" + camObj["REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO"].toString() + "<br>" +
-                                                              "<strong>INFO_SUPPORTED_HARDWARE_LEVEL: </strong>"                               + camObj["INFO_SUPPORTED_HARDWARE_LEVEL"]                                          + "<br>" +
-                                                              "<strong>formatsAndSizes: </strong>"            + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["formatsAndSizes"])                + "</span></details><br>" +
-                                                              "<strong>effectsAvailable: </strong>"           + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["effectsAvailable"])               + "</span></details><br>" +
+                                                              "<strong>INFO_SUPPORTED_HARDWARE_LEVEL: </strong>"                               + camObj["INFO_SUPPORTED_HARDWARE_LEVEL"]                                          + "<br>";
+
+      tmpStr +=   "<strong>formatsAndSizes: </strong>"            + "<details><summary>{...formats...}</summary><span>";
+      Object.keys(camObj["formatsAndSizes"]).forEach(function(k) {
+        tmpStr += "<strong>format: " + camObj["formatsAndSizes"][k]["name"] + "</strong><details><summary>{...sizes...}</summary><span>";
+        Object.keys(camObj["formatsAndSizes"][k]["sizes"]).forEach(function(j) { tmpStr += "<strong>"+j+":</strong> <span>"+camObj["formatsAndSizes"][k]["sizes"][j]+"</span><br>"; });
+        tmpStr += "</span></details><br>";
+      });
+      tmpStr +=   "</span></details><br>";
+      document.getElementById(htmlContainerId).innerHTML += tmpStr;
+
+      document.getElementById(htmlContainerId).innerHTML +=   "<strong>effectsAvailable: </strong>"           + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["effectsAvailable"])               + "</span></details><br>" +
                                                               "<strong>highestFPSAssessment: </strong>"       + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["highestFPSAssessment"])           + "</span></details><br>" +
                                                               "<strong>CONTROL_AE_AVAILABLE_MODES: </strong>" + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["CONTROL_AE_AVAILABLE_MODES"])     + "</span></details><br>" +
                                                               "<strong>CONTROL_AVAILABLE_MODES: </strong>"    + "<details><summary>{.....}</summary><span>" + JSON.stringify(camObj["CONTROL_AVAILABLE_MODES"])        + "</span></details><br>" +
